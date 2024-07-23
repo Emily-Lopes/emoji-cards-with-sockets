@@ -1,0 +1,1 @@
+# Lista as dependências do servidor de banco de dados.

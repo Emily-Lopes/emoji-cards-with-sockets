@@ -1,0 +1,1 @@
+#  Define a imagem Docker para o servidor de banco de dados.

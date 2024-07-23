@@ -1,0 +1,1 @@
+# Inicia o servidor de aplicação e define as rotas.
