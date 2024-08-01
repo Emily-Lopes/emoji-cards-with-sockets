@@ -15,8 +15,6 @@ class DBConnectionHandler:
     def get_engine(self):
         return self.__engine
     
-    # def create_database():
-    
     def __enter__(self): #toda vez que 'entrar' na classe a partir do contexto with, vai executar esse método
         session_make = sessionmaker(bind=self.__engine) # vincular uma sessao na engine
         self.session = session_make() # criando uma sessao basica

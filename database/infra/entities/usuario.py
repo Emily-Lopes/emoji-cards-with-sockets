@@ -6,6 +6,6 @@ class Usuario(Base):
     username = Column(String, primary_key=True)
     senha = Column(String)
     status = Column(String) #jogando - online - offline
-    colecao_cartas = Column(String) #string simulado um vetor com nome das cartas: ['carta1', 'carta2',..]
+    colecao_cartas = Column(String) #string: 'carta1', 'carta2',.. -> fazer split(,) para pegar cada carta
     qtd_baralhos = Column(Integer)
-    baralhos = Column(String) #string simulando um vetor de vetores: [['baralho1'],['baralho2'],['baralho3']]
+    baralhos = Column(String) #string: 'baralho1'-'baralho2'-'baralho3' -> fazer split(-) para pegar cada baralho

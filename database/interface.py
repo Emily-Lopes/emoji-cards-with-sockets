@@ -10,6 +10,8 @@ repoUsuario = UsuarioRepository()
 # criando tabelas (caso ainda não existam)
 Base.metadata.create_all(DBConnectionHandler().get_engine())
 
+#interface intermediário entre servidor e banco de dados
+
 # def insert_data():
 #     session = Session() # criando uma sessao basica
 #     carta1 = Carta(emocao='autoestima', tempo='anos', impacto_social='positivo', efeito_cognitivo='certeza', qtd_emocoes_opostas=1, qtd_emocoes_relacionadas=1, intensidade=5)
@@ -27,4 +29,40 @@ Base.metadata.create_all(DBConnectionHandler().get_engine())
 data = repoCarta.select_all()
 for d in data:
     print(d.emocao)
+    
+'''
+da pra utulizar get_usuario:
+def get_colecao(self, username):
+    try:
+        with DBConnectionHandler() as db:
+            usuario = db.session.query(Usuario).filter_by(username=username).first()
+            if usuario:
+                return usuario.colecao_cartas.split(',')
+            return None
+    except SQLAlchemyError as e:
+        print(f"Erro ao obter coleção de cartas: {e}")
+        return None
+
+def get_qtd_baralhos(self, username):
+    try:
+        with DBConnectionHandler() as db:
+            usuario = db.session.query(Usuario).filter_by(username=username).first()
+            if usuario:
+                return usuario.qtd_baralhos
+            return None
+    except SQLAlchemyError as e:
+        print(f"Erro ao obter quantidade de baralhos: {e}")
+        return None
+
+def get_status(self, username):
+    try:
+        with DBConnectionHandler() as db:
+            usuario = db.session.query(Usuario).filter_by(username=username).first()
+            if usuario:
+                return usuario.status
+            return None
+    except SQLAlchemyError as e:
+        print(f"Erro ao obter status do usuário: {e}")
+        return None
+'''
 
