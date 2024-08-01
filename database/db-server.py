@@ -1,1 +1,0 @@
-# Inicia o servidor de banco de dados.
