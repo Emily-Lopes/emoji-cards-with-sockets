@@ -6,8 +6,8 @@ class UsuarioRepository: #vai ser como a interface direta para a tabela Carta
     def select_all(self):
         with DBConnectionHandler() as db: #as instanciar o objeto assim:
             #chama o método enter: retorna self, que vai estar em db
-            data = db.session.query(Usuario).all()
-            return data
+            usuarios = db.session.query(Usuario).all()
+            return usuarios
             #chama o método exit
     
     #metodo para inserir um novo usuario no banco de dados, se ainda não existir usuŕio com o mesmo username.
@@ -81,12 +81,17 @@ class UsuarioRepository: #vai ser como a interface direta para a tabela Carta
             with DBConnectionHandler() as db:
                 usuario = db.session.query(Usuario).filter_by(username=username).first()
                 if usuario:
-                    baralhos = usuario.colecao_cartas.split('-')
-                    baralhos.append(baralho)
-                    usuario.baralhos = '-'.join(baralhos)
-                    usuario.qtd_baralhos = len(baralhos) #atualizar contador 
+                    if usuario.qtd_baralhos == 0:
+                        usuario.baralhos = baralho
+                    else:
+                        baralhos = usuario.baralhos.split('-')
+                        baralhos.append(baralho)
+                        usuario.baralhos = '-'.join(baralhos)
+                        
+                    usuario.qtd_baralhos += 1 #atualizar contador 
                     db.session.commit()
                     return True, "Baralho adicionado com sucesso"
+                
                 return False, "Usuário não encontrado"
         except Exception as e:
             db.session.rollback() #volte o banco ao estado anterior, caso ela tenha sido alterado
@@ -98,14 +103,18 @@ class UsuarioRepository: #vai ser como a interface direta para a tabela Carta
             with DBConnectionHandler() as db:
                     usuario = db.session.query(Usuario).filter_by(username=username).first()
                     if usuario:
-                        baralhos = usuario.colecao_cartas.split('-')
+                        if usuario.qtd_baralhos == 0:
+                            return False, "usuário Não Possui Nenhum Baralho"
+                        
+                        baralhos = usuario.baralhos.split('-')
                         if 0 <= indice < len(baralhos):
                             baralhos.pop(indice)
                             usuario.baralhos = '-'.join(baralhos)
-                            usuario.qtd_baralhos = len(baralhos) #atualizar contador 
+                            usuario.qtd_baralhos -= 1 #atualizar contador 
                             db.session.commit()
                             return True, "Baralho excluído com sucesso"
-                        return False, "Índice de baralho inválido"
+                        return False, "Índice do baralho inválido"
+                    
                     return False, "Usuário não encontrado"
         except Exception as e:
             db.session.rollback() #volte o banco ao estado anterior, caso ela tenha sido alterado
