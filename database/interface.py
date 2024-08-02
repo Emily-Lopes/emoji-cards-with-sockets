@@ -23,12 +23,16 @@ def iniciar_banco_dados():
 # ------------------------------------------------------------------------------------------
 def get_emocoes_cadastradas():
     emocoes_cadastradas = repoCarta.get_emocoes()
-    return ','.join(emocoes_cadastradas)
+    if len(emocoes_cadastradas)>0:
+        return True, ','.join(emocoes_cadastradas)
+    else:
+        return False, "Nenhuma Carta Cadastrada"
+    
 
 def get_atributos_carta(emocao):
     carta = repoCarta.get_carta(emocao)
     if carta == None :
-        return False, f"Carta {emocao} não existe!"
+        return False, f"Carta não existe!"
     else:
         return True, carta.atributos #string no formato de dicionario
 
@@ -48,9 +52,9 @@ def adicionar_usuario(username, senha, cartas):
 def verificar_username_existe(username):
     usuario = repoUsuario.get_usuario(username)
     if usuario == None:
-        return False, 'Username está disponível!' 
+        return False, "Username está disponível!" 
     else:
-        return True, 'Username já existe!'
+        return True, "Username já existe!"
 
 def verificar_login(username, senha):
     confimacao = repoUsuario.check_login(username, senha)   
@@ -60,14 +64,14 @@ def verificar_login(username, senha):
         username_existe, _ = verificar_username_existe(username)
         if username_existe:
             #se o usuario existe, então é a senha que está incorreta
-            return confimacao, "Senha Incorreta"
+            return confimacao, "Senha Incorreta!"
         else:
-            return confimacao, "Username Inválido"
+            return confimacao, "Username Inválido!"
 
 def buscar_usuario(username):
     usuario = repoUsuario.get_usuario(username)
     if usuario == None:
-        return False, "Usuário Não Existe"
+        return False, "Usuário não encontrado"
     
     usuario_info = { 'username': usuario.username,
                      'status': usuario.status,
@@ -81,7 +85,7 @@ def buscar_usuario(username):
 def get_status(username):
     usuario = repoUsuario.get_usuario(username)
     if usuario == None:
-        return False, "Usuário Não Existe"
+        return False, "Usuário não encontrado"
     else:
         return True, usuario.status
     
@@ -92,13 +96,13 @@ def set_status(username, status):
     #possibilidades:
     True,"Status atualizado com sucesso!"
     False, "Usuário não encontrado"
-    False, "Erro ao atualizar status do usuário: {excecao}'
+    False, "Erro ao atualizar status do usuário: {excecao}"
     '''
 
 def get_colecao(username):
     usuario = repoUsuario.get_usuario(username)
     if usuario == None:
-        return False, 'Usuário Não Existe'
+        return False, "Usuário não encontrado"
     else:
         return True, usuario.colecao_cartas #lá no cliente: usuario.colecao_cartas.split(',')
 
@@ -115,14 +119,14 @@ def adicionar_carta_na_colecao(username, emocao):
 def get_baralhos(username):
     usuario = repoUsuario.get_usuario(username)
     if usuario == None:
-        return False, 'Usuário Não Existe'
+        return False, "Usuário não encontrado" 
     else:
         return True, usuario.baralhos #lá no cliente: usuario.colecao_cartas.split('-')
 
 def get_qtd_baralhos(username):
     usuario = repoUsuario.get_usuario(username)
     if usuario == None:
-        return False, 'Usuário Não Existe'
+        return False, "Usuário não encontrado" 
     else:
         return True, str(usuario.qtd_baralhos)
 
@@ -134,11 +138,11 @@ def adicionar_baralho(username, baralho):
     #possibilidades:
     True, "Baralho adicionado com sucesso"
     False, "Usuário não encontrado"
-    False, "Erro ao adicionar baralho: {excecao}'
+    False, "Erro ao adicionar baralho: {excecao}"
     '''
 
 def excluir_baralho(username, indice):
-    confirmacao, msg = repoUsuario.excluir_baralho(username, indice)
+    confirmacao, msg = repoUsuario.excluir_baralho(username, int(indice))
     return confirmacao, msg
     '''
     #possibilidades:
@@ -146,7 +150,7 @@ def excluir_baralho(username, indice):
     False, "usuário Não Possui Nenhum Baralho"
     False, "Índice do baralho inválido"
     False, "Usuário não encontrado"
-    False, "Erro ao excluir baralho: {excecao}'
+    False, "Erro ao excluir baralho: {excecao}"
     '''  
 
 
