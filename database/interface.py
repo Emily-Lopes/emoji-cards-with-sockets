@@ -23,7 +23,7 @@ def iniciar_banco_dados():
 # ------------------------------------------------------------------------------------------
 def get_emocoes_cadastradas():
     emocoes_cadastradas = repoCarta.get_emocoes()
-    return emocoes_cadastradas
+    return ','.join(emocoes_cadastradas)
 
 def get_atributos_carta(emocao):
     carta = repoCarta.get_carta(emocao)
