@@ -1,9 +1,8 @@
 import socket
-import threading
 
 def run_client():
-
-    db_server_ip = "127.0.0.1"  # replace with the server's IP address
+    
+    db_server_ip = "0.0.0.0"  # replace with the server's IP address
     db_server_port = 39526  # replace with the server's port number
 
     while True:

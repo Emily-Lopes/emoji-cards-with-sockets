@@ -8,4 +8,5 @@ COPY requirements.txt ./
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-CMD python3 server.py
+#especificar o comando que ele vai rodar
+CMD python3 db-server.py

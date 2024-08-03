@@ -1,0 +1,31 @@
+# da para excutar cada Dockerfile isoladamente, 
+# mas tem outro artificio que é o dockercompose, que vai compor essas diferentes imagens em um só contetxo coeso
+
+services:
+  db-server:
+    container_name: db-server
+    ports:
+      - "39526:39526"
+    build: database #especificar de onde está puxando: caminho da pasta que contem o arquivo Dockerfile
+    volumes: #outro jeito de copiar os arquivos: vai sincronizar uma pasta local com um caminho do docker, assim posso aletrar arquivos locais e ter certeza que essas mudanças vão aparecer imediantemente dentro do docker
+    - ./database:/home/emoji-cards/database
+    working_dir: /home/emoji-cards/database #dizer que esse caminho pra onde copiei os arquivos vai ser o diertorio onde vai inciar
+    # network_mode: host
+
+  client-leticia:
+    container_name: client-leticia
+    build: client #especificar de onde está puxando: caminho da pasta que contem o arquivo Dockerfile
+    volumes: #outro jeito de copiar os arquivos: vai sincronizar uma pasta local com um caminho do docker, assim posso aletrar arquivos locais e ter certeza que essas mudanças vão aparecer imediantemente dentro do docker
+    - ./client:/home/emoji-cards/client
+    working_dir: /home/emoji-cards/client #dizer que esse caminho pra onde copiei os arquivos vai ser o diertorio onde vai inciar
+    # network_mode: host
+    depends_on:
+      - db-server
+
+  # client-ingred:
+  #   container_name: client-ingred
+  #   build: client #especificar de onde está puxando: caminho da pasta que contem o arquivo Dockerfile
+  #   volumes: #outro jeito de copiar os arquivos: vai sincronizar uma pasta local com um caminho do docker, assim posso aletrar arquivos locais e ter certeza que essas mudanças vão aparecer imediantemente dentro do docker
+  #   - ./client:/home/emoji-cards/client
+  #   working_dir: /home/emoji-cards/client #dizer que esse caminho pra onde copiei os arquivos vai ser o diertorio onde vai inciar
+  #   network_mode: host

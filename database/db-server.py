@@ -152,7 +152,7 @@ def run_server():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 
     # bind the socket to a specific address and port
-    server_ip = "127.0.0.1" #localhost
+    server_ip = "0.0.0.0" #localhost
     port = 39526
     server.bind((server_ip, port)) 
     
