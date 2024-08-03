@@ -1,8 +1,15 @@
+'''
+Threads deverão ser utilizadas nesta implementação de forma bastante simples: o
+processo servidor deverá utilizar uma thread para recepcionar as requisições recebidas e
+outra(s) para processá-las.
+'''
+
 import socket
 import threading
 
 import interface #arquivo interface.py vai funcionar como uma biblioteca
 
+# função para lidar com as requisições dos clientes
 def handle_client(client_socket):
     request = client_socket.recv(1024).decode('utf-8')  # convert bytes to string
     print(f"Received request: {request}")
@@ -142,34 +149,68 @@ def handle_client(client_socket):
     
     #finaliza thread
     client_socket.close()
-       
 
-def run_server():
+'''
+usando um loop infinito na thread principal para aceitar conexões e, 
+em seguida, cria uma nova thread para lidar com cada conexão do cliente. 
+'''
+# def main():
+#     interface.iniciar_banco_dados()
     
-    interface.iniciar_banco_dados()
-    
-    # create a socket object
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+#     # create a socket object
+#     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 
-    # bind the socket to a specific address and port
-    server_ip = "0.0.0.0" #localhost
-    port = 39526
-    server.bind((server_ip, port)) 
+#     # bind the socket to a specific address and port
+#     server_ip = "0.0.0.0" #localhost
+#     port = 39526
+#     server.bind((server_ip, port)) 
     
-    # listen for incoming connections
-    server.listen()
-    print(f"DB-Server listening on {server_ip}:{port}")
+#     # listen for incoming connections
+#     server.listen()
+#     print(f"DB-Server listening on {server_ip}:{port}")
     
-    # loop infinito pois servidor deve estar sempre disponível
+#     # loop infinito pois servidor deve estar sempre disponível
+#     while True:
+#         client_socket, client_address = server.accept()
+#         print(f"\nAccepted connection from {client_address[0]}:{client_address[1]}")
+
+#         #para cada requisicao criar um thread para lidar com a requisao e deixar a porta 'de escuta' livre
+#         client_handler = threading.Thread(target=handle_client, args=(client_socket,))
+#         client_handler.start() 
+    
+#     # server.close() 
+
+'''
+servidor use uma thread separada para ouvir as conexões
+'''
+# função para aceitar conexões de clientes
+def accept_connections(server_socket):
     while True:
-        client_socket, client_address = server.accept()
-        print(f"\nAccepted connection from {client_address[0]}:{client_address[1]}")
-
-        #para cada requisicao criar um thread para lidar com a requisao e deixar a porta 'de escuta' livre
+        client_socket, addr = server_socket.accept()
+        print(f"Conexão aceita de {addr}")
+        
+        # Cria uma nova thread para processar a requisição do cliente
         client_handler = threading.Thread(target=handle_client, args=(client_socket,))
-        client_handler.start() 
+        client_handler.start()
+        
+def main():
+    server_ip = '0.0.0.0'
+    server_port = 39526
+
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind((server_ip, server_port))
     
-    # server.close() 
+    print(f"Servidor ouvindo em {server_ip}:{server_port}")
+    
+    server.listen(10) # ouve por conexões de entrada, com uma fila de até 10 conexões pendentes
+
+    # cria uma thread para aceitar conexões de clientes
+    accept_thread = threading.Thread(target=accept_connections, args=(server,))
+    accept_thread.start()
+
+    # mantém o servidor rodando: garante que o programa principal aguarde a conclusão da thread de aceitação (accept_thread). 
+    # no entanto, como o loop de aceitação de conexões é infinito, essa thread nunca termina, e join() mantém o programa principal em execução. Isso é útil para garantir que o servidor não termine prematuramente e permaneça ativo enquanto está aceitando conexões.
+    accept_thread.join()
 
 if __name__ == "__main__":
-    run_server()
+    main()
