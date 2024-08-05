@@ -141,6 +141,10 @@ def handle_client(client_socket):
             response = f"erro: {str(e)}"
             client_socket.send(response.encode('utf-8')) # convert string to bytes
     
+    elif request.startswith('close'):
+        response = "Encerrando conexão com o cliente."
+        client_socket.send("Conexão encerrada.".encode('utf-8'))
+    
     else:
         response = f"erro: mensagem não foi combinada"
         client_socket.send(response.encode('utf-8')) # convert string to bytes
@@ -194,6 +198,8 @@ def accept_connections(server_socket):
         client_handler.start()
         
 def main():
+    interface.iniciar_banco_dados()
+    
     server_ip = '0.0.0.0'
     server_port = 39526
 
