@@ -7,6 +7,16 @@ import threading
 
 from ..telas.criar_partida import CriarPartida
 
+import arcade
+import arcade.gui # submódulo gui do arcade, que fornece componentes para criar interfaces gráficas.
+
+from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR
+
+import threading
+
+from ..telas.criar_partida import CriarPartida
+from ..telas.responder_convite import ResponderConvite
+
 class CriarConta(arcade.View): 
     def __init__(self, cliente):
         super().__init__() # chama o construtor da classe base (arcade.View) para garantir que a visão seja corretamente inicializada.
@@ -64,7 +74,7 @@ class CriarConta(arcade.View):
         # login_button = arcade.gui.UIFlatButton(text="Login", width=300)
         @criar_conta_button.event
         def on_click(event):
-            self.start_thread()
+            threading.Thread(target=self.confirmar_dados).start()
             
         vbox.add(criar_conta_button)
 
@@ -81,7 +91,7 @@ class CriarConta(arcade.View):
             if self.response == 'Usuário adicionado com sucesso!':
                 self.window.show_view(CriarPartida(self.cliente))
             else:
-                self.msg.text = self.response
+                self.msg.text = self.response or "Deu Erro"
                 self.response = None
 
     # define o método on_show_view, chamado quando a visão é exibida.
@@ -106,12 +116,6 @@ class CriarConta(arcade.View):
             
         self.manager.draw()
     
-    def start_thread(self):
-        # if self.thread and self.thread.is_alive():
-        #     return  # evita múltiplas threads ao mesmo tempo
-        self.thread = threading.Thread(target=self.confirmar_dados)
-        self.thread.start()
-
     def confirmar_dados(self):
         username = self.username_input.text
         password = self.password_input.text

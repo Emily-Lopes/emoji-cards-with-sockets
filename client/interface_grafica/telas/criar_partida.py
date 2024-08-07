@@ -23,10 +23,10 @@ class CriarPartida(arcade.View):
         vbox = arcade.gui.UIBoxLayout()
         
         # cria um campo de texto (UITextArea) que exibirá mensagens. define suas dimensões e o tamanho da fonte.
-        self.msg = arcade.gui.UITextArea(
+        self.exibir_username = arcade.gui.UITextArea(
             text=self.cliente.get_username(), width=150, height=40, font_size=12, text_color=AMARELO
         )
-        vbox.add(self.msg)
+        vbox.add(self.exibir_username)
         
         # campo de texto para mostrar mensagem
         self.username1 = arcade.gui.UITextArea(
@@ -87,12 +87,19 @@ class CriarPartida(arcade.View):
         
     # define o método on_update, chamado a cada atualização do quadro, por exemplo atualiza algum atributo.
     def on_update(self, delta_time: float):
-        if self.response:
-            if self.response == '?':
-                self.window.show_view(Aguardar(self.cliente))
-            else:
-                self.msg.text = self.response
-                self.response = None
+        pass
+        # if self.response:
+        #     if self.response == '?':
+        #         self.window.show_view(Aguardar(self.cliente))
+        #     else:
+        #         self.msg.text = self.response
+        #         self.response = None
+                
+        # if self.cliente.convite:
+        #     convite = self.cliente.convite
+        #     self.cliente.convite = None  # Limpa o convite após processá-lo
+        #     self.msg.text = f"receber convite {str(convite)}"
+        #     # self.window.show_view(ResponderConvite(self.cliente, convite))
 
     # define o método on_show_view, chamado quando a visão é exibida.
     def on_show_view(self):
@@ -113,8 +120,8 @@ class CriarPartida(arcade.View):
         #desenhar        
         self.manager.draw()
     
-    def start_thread(self):
-        # if self.thread and self.thread.is_alive():
-        #     return  # evita múltiplas threads ao mesmo tempo
-        self.login_thread = threading.Thread(target=self.confirmar_dados)
-        self.login_thread.start()
+    # def start_thread(self):
+    #     # if self.thread and self.thread.is_alive():
+    #     #     return  # evita múltiplas threads ao mesmo tempo
+    #     self.login_thread = threading.Thread(target=self.confirmar_dados)
+    #     self.login_thread.start()

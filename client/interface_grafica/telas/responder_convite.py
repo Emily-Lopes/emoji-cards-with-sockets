@@ -3,6 +3,8 @@ import arcade.gui # submódulo gui do arcade, que fornece componentes para criar
 
 from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR
 
+from ..telas.criar_partida import CriarPartida
+
 import threading
 
 # define a classe LoginView que herda de arcade.View. Cada classe View representa uma tela ou seção da aplicação.
@@ -103,7 +105,8 @@ class ResponderConvite(arcade.View):
         # limpa o conteúdo da tela.
         self.clear()
                 
-        arcade.draw_texture_rectangle(LARGURA_TELA//2, ALTURA_TELA // 2, self.logo.width//100,
+        arcade.draw_texture_rectangle(0, 0, self.logo.width//100,
                                           self.logo.height//100, self.logo)
             
         self.manager.draw()
+

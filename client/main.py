@@ -21,7 +21,6 @@ def main():
     #inicia o loop principal do arcade, que mantém a aplicação em execução e atualiza a tela.
     arcade.run()
 
-    
 if __name__ == "__main__":
     import sys
     main(*sys.argv[1:])

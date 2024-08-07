@@ -21,29 +21,29 @@ services:
     environment:
       - DISPLAY=$DISPLAY
     volumes:
-      # - /tmp/.X11-unix:/tmp/.X11-unix
+      - /tmp/.X11-unix:/tmp/.X11-unix
       - ./client:/usr/local/ccf355/client
     working_dir: /usr/local/ccf355/client
     network_mode: host
 
-  # client-jogador2:
-  #   container_name: client-jogador2
-  #   build: client
-  #   environment:
-  #     - DISPLAY=$DISPLAY
-  #   volumes:
-  #     - /tmp/.X11-unix:/tmp/.X11-unix
-  #     - ./client:/usr/local/ccf355/client
-  #   working_dir: /usr/local/ccf355/client
-  #   network_mode: host
+  client-jogador2:
+    container_name: client-jogador2
+    build: client
+    environment:
+      - DISPLAY=$DISPLAY
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ./client:/usr/local/ccf355/client
+    working_dir: /usr/local/ccf355/client
+    network_mode: host
 
-  # client-jogador3:
-  #     container_name: client-jogador3
-  #     build: client
-  #     environment:
-  #       - DISPLAY=$DISPLAY
-  #     volumes:
-  #       - /tmp/.X11-unix:/tmp/.X11-unix
-  #       - ./client:/usr/local/ccf355/client
-  #     working_dir: /usr/local/ccf355/client
-  #     network_mode: host
+  client-jogador3:
+      container_name: client-jogador3
+      build: client
+      environment:
+        - DISPLAY=$DISPLAY
+      volumes:
+        - /tmp/.X11-unix:/tmp/.X11-unix
+        - ./client:/usr/local/ccf355/client
+      working_dir: /usr/local/ccf355/client
+      network_mode: host

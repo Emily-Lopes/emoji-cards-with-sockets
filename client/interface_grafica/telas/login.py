@@ -7,6 +7,8 @@ import threading
 
 from ..telas.criar_conta import CriarConta
 from ..telas.criar_partida import CriarPartida
+from ..telas.responder_convite import ResponderConvite
+
 
 # define a classe LoginView que herda de arcade.View. Cada classe View representa uma tela ou seção da aplicação.
 class Login(arcade.View): 
@@ -18,6 +20,13 @@ class Login(arcade.View):
         self.login_thread = None
         self.login_result = None
         self.setup() # chama o método setup para configurar a interface gráfica da visão.
+    
+    #     self.cliente.set_convite(self.manipular_convite)
+
+    # def manipular_convite(self, host, id_partida):
+    #     # print(f"Convite de partida do usuario: {host}")
+    #     # return f'resposta_convite,{self.username},{id_partida},aceito'
+    #     self.show_view(ResponderConvite(self.cliente))
 
     # define o método setup, que configura os componentes da interface gráfica.
     def setup(self):

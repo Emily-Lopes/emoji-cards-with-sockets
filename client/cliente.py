@@ -10,14 +10,14 @@ class Cliente:
         self.__buffer = 1024
         self.__username = None
 
-        self.__convite = None
+        self.convite = None
     
     def get_username(self):
         return self.__username
 
     # Funções para manipular o recebimento de convite de uma partida
     def set_convite(self, convite):
-        self.__convite = convite
+        self.convite = convite
 
     def __ouvir_mensagem_convite(self, client_ip, client_port):
         try:
@@ -46,8 +46,8 @@ class Cliente:
         if request.startswith('convite_partida'):
             server_socket =  self.__criar_conexao_servidor()
             _, username_dono, id_partida = request.split(',')
-            if self.__convite:
-                request = self.__convite(username_dono, id_partida)
+            if self.convite:
+                request = self.convite(username_dono, id_partida)
                 server_socket.send(request.encode('utf-8'))
 
         if request.startswith('preparando'):
@@ -127,6 +127,7 @@ class Cliente:
             self.__enviar_dados(client, request)
             response = self.__receber_dados(client)
             if response == "Usuário adicionado com sucesso!":
+                self.__username = username
                 return True, response
             return False, response
         except Exception as e:
@@ -298,6 +299,7 @@ class Cliente:
             request = f"criar_partida,{self.__username},{username2},{username3}"
             self.__enviar_dados(client, request)
             response = self.__receber_dados(client)
+            print(response)
             # if response == "True":
             #     return True
             # return False
