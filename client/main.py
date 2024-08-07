@@ -1,9 +1,9 @@
 import arcade 
-from views import MainView, LoginView
+from interfaceGrafica.telas.views import LoginView
 
-def main(client_name: str):
+def main():
     # cria uma instância da janela com 800x600 pixels, o título configurado para incluir o nome do cliente, e permite que a janela seja redimensionada.
-    window = arcade.Window(800, 600,f"Client - {client_name}", resizable=True)
+    window = arcade.Window(800, 600,f"Client", resizable=True)
     # window = Window(fullscreen=True, resizable=False) #
     
     # cria uma instância da visão principal MainView, passando o nome do cliente como argumento.
@@ -16,6 +16,7 @@ def main(client_name: str):
     #inicia o loop principal do arcade, que mantém a aplicação em execução e atualiza a tela.
     arcade.run()
 
+    
 if __name__ == "__main__":
     import sys
     main(*sys.argv[1:])

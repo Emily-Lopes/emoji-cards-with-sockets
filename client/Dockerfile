@@ -19,4 +19,4 @@ COPY requirements.txt ./
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-CMD python main.py $CLIENT_NAME
+CMD python main.py

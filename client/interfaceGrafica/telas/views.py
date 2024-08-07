@@ -1,7 +1,7 @@
 import arcade
 import arcade.gui # submódulo gui do arcade, que fornece componentes para criar interfaces gráficas.
 import threading
-from comunicacao import send_message, send_login
+from comunicacao import send_login
 
 from cliente import Client
 

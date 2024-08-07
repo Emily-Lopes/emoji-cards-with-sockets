@@ -1,14 +1,22 @@
 services:
-  server:
-    container_name: server
-    build: server
+  database-server:
+    container_name: db-server
+    build: db-server
     volumes:
-      - ./server:/usr/local/ccf355/server
-    working_dir: /usr/local/ccf355/server
+      - ./db-server:/usr/local/ccf355/db-server
+    working_dir: /usr/local/ccf355/db-server
     network_mode: host
 
-  client-julia:
-    container_name: client-julia
+  application-server:
+    container_name: app-server
+    build: app-server
+    volumes:
+      - ./app-server:/usr/local/ccf355/app-server
+    working_dir: /usr/local/ccf355/app-server
+    network_mode: host
+
+  client-jogador1:
+    container_name: client-jogador1
     build: client
     environment:
       - DISPLAY=$DISPLAY
@@ -19,14 +27,26 @@ services:
     working_dir: /usr/local/ccf355/client
     network_mode: host
 
-  client-claudio:
-    container_name: client-claudio
-    build: client
-    environment:
-      - DISPLAY=$DISPLAY
-      - CLIENT_NAME=Claudio
-    volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix
-      - ./client:/usr/local/ccf355/client
-    working_dir: /usr/local/ccf355/client
-    network_mode: host
+  # client-jogador2:
+  #   container_name: client-jogador2
+  #   build: client
+  #   environment:
+  #     - DISPLAY=$DISPLAY
+  #     - CLIENT_NAME=Claudio
+  #   volumes:
+  #     - /tmp/.X11-unix:/tmp/.X11-unix
+  #     - ./client:/usr/local/ccf355/client
+  #   working_dir: /usr/local/ccf355/client
+  #   network_mode: host
+
+  # client-jogador3:
+  #     container_name: client-jogador3
+  #     build: client
+  #     environment:
+  #       - DISPLAY=$DISPLAY
+  #       - CLIENT_NAME=Claudio
+  #     volumes:
+  #       - /tmp/.X11-unix:/tmp/.X11-unix
+  #       - ./client:/usr/local/ccf355/client
+  #     working_dir: /usr/local/ccf355/client
+  #     network_mode: host

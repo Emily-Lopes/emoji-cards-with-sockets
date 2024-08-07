@@ -1,15 +1,17 @@
 import socket
 
-def send_message(client_name: str) -> str:
+def send_login(username, senha) -> str:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect(("0.0.0.0", 4242))
-        s.sendall(client_name.encode("utf8"))
-        msg = s.recv(1024)
-        return f"Server said: {msg.decode('utf8')}"
-
-def send_login(client_name: str) -> str:
+        s.connect(("0.0.0.0", 5000))
+        request = f"login,{username},{senha}"
+        s.sendall(request.encode("utf8"))
+        response = s.recv(1024)
+        return f"Server said: {response.decode('utf8')}"
+    
+def send_login(username, senha) -> str:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect(("0.0.0.0", 4242))
-        s.sendall(client_name.encode("utf8"))
-        msg = s.recv(1024)
-        return f"Server said: {msg.decode('utf8')}"
+        s.connect(("0.0.0.0", 5000))
+        request = f"login,{username},{senha}"
+        s.sendall(request.encode("utf8"))
+        response = s.recv(1024)
+        return f"Server said: {response.decode('utf8')}"
