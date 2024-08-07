@@ -10,7 +10,7 @@ class Cliente:
         self.__buffer = 1024
         self.__username = None
 
-        self.convite = None
+        self.mensagem_servidor = None
     
     def get_username(self):
         return self.__username
@@ -44,16 +44,17 @@ class Cliente:
 
     def __manipular_mensagem_convite(self, request):
         if request.startswith('convite_partida'):
-            server_socket =  self.__criar_conexao_servidor()
             _, username_dono, id_partida = request.split(',')
-            if self.convite:
-                request = self.convite(username_dono, id_partida)
-                server_socket.send(request.encode('utf-8'))
+            self.mensagem_servidor = f"convite,{username_dono},{id_partida}"
+        
+        if request.startswith('partida_criada'):
+            self.mensagem_servidor = f"partida_criada,{username_dono},{id_partida}"
 
-        if request.startswith('preparando'):
-            print('recebi do server: preparando partida') # mandaria isso pra interface mudar de tela, sabe?
+    def responder_convite(self, resposta, id_partida): 
+        server_socket =  self.__criar_conexao_servidor()
+        request = f'resposta_convite,{self.__username},{id_partida},{resposta}'
+        server_socket.send(request.encode('utf-8'))
 
-    
     def __criar_conexao_servidor(self):
         try: 
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -63,7 +64,6 @@ class Cliente:
             print(f"Erro ao criar conexao com o servidor:\n{e}")
             return None
     
-
     def __fechar_conexao_servidor(self, client):
         try: 
             client.close()
@@ -298,8 +298,8 @@ class Cliente:
             client = self.__criar_conexao_servidor()
             request = f"criar_partida,{self.__username},{username2},{username3}"
             self.__enviar_dados(client, request)
-            response = self.__receber_dados(client)
-            print(response)
+            response = self.__receber_dados(client) #por enquanto criar partida não retorna nada
+            # print(response)
             # if response == "True":
             #     return True
             # return False

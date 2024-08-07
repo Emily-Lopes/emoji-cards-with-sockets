@@ -153,7 +153,6 @@ def excluir_baralho(username, indice):
     False, "Erro ao excluir baralho: {excecao}"
     '''  
 
-
 # # testes:
 # print('iniciar banco de dados')
 # iniciar_banco_dados()

@@ -3,17 +3,22 @@ import arcade.gui # submódulo gui do arcade, que fornece componentes para criar
 
 from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR
 
-from ..telas.criar_partida import CriarPartida
+from ..telas.aguardar_jogadores import AguardarJogadores
+from ..telas.perfil import Perfil
+
 
 import threading
 
 # define a classe LoginView que herda de arcade.View. Cada classe View representa uma tela ou seção da aplicação.
 class ResponderConvite(arcade.View): 
-    def __init__(self, cliente):
+    def __init__(self, cliente, username_dono, id_partida):
         super().__init__() # chama o construtor da classe base (arcade.View) para garantir que a visão seja corretamente inicializada.
         self.manager = arcade.gui.UIManager() # cria uma instância do gerenciador de interface do usuário, que será usado para gerenciar os elementos gráficos
         self.logo = arcade.load_texture(f"interface_grafica/resources/widgets/logo.png")
         self.cliente = cliente
+        self.username_dono = username_dono
+        self.resposta = None
+        self.id_partida = id_partida   
         self.setup() # chama o método setup para configurar a interface gráfica da visão.
 
     # define o método setup, que configura os componentes da interface gráfica.
@@ -30,7 +35,7 @@ class ResponderConvite(arcade.View):
 
         # campo de texto para mostrar mensagem
         self.descricao = arcade.gui.UITextArea(
-            text="<> convidou você para jogar.", width=400, height=40, font_size=14, font_name=POPPINS
+            text=f"{self.username_dono} convidou você para jogar.", width=400, height=40, font_size=14, font_name=POPPINS
         )
         # adiciona o campo de texto ao layout vertical
         vbox.add(self.descricao)
@@ -54,8 +59,8 @@ class ResponderConvite(arcade.View):
 
         @aceitar_button.event
         def on_click(event):
-            print("aceitou")
-            #mudar de tela e passar a thread que vai esperar o resultado
+            self.resposta = "aceito"
+            threading.Thread(target=self.enviar_resposta).start()
                         
         vbox.add(aceitar_button)
         
@@ -72,8 +77,8 @@ class ResponderConvite(arcade.View):
 
         @recusar_button.event
         def on_click(event):
-            print("recusou")
-            # repassar a resposta
+            self.resposta = "recuso"
+            threading.Thread(target=self.enviar_resposta).start()
             
         vbox.add(recusar_button)
         
@@ -86,7 +91,15 @@ class ResponderConvite(arcade.View):
     
     # define o método on_update, chamado a cada atualização do quadro, por exemplo atualiza algum atributo.
     def on_update(self, delta_time: float):
-        pass
+        if self.resposta:
+            if self.resposta == "aceito":
+                self.resposta = None
+                self.window.show_view(AguardarJogadores(self.cliente))
+                
+            else:
+                self.resposta = None
+                self.window.show_view(Perfil(self.cliente)) 
+                     
 
     # define o método on_show_view, chamado quando a visão é exibida.
     def on_show_view(self):
@@ -109,4 +122,7 @@ class ResponderConvite(arcade.View):
                                           self.logo.height//100, self.logo)
             
         self.manager.draw()
+    
+    def enviar_resposta(self):
+        self.cliente.responder_convite(self.resposta, self.id_partida)
 

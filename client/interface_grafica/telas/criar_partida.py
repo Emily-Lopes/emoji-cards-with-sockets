@@ -5,7 +5,9 @@ from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POP
 
 import threading
 
-from ..telas.aguardar import Aguardar
+from .aguardar_jogadores import AguardarJogadores
+from ..telas.responder_convite import ResponderConvite
+
 
 #como é a tela que o cliente é direcionado quando faz login/cria conta, é onde vai lidar com convites
 class CriarPartida(arcade.View): 
@@ -14,7 +16,7 @@ class CriarPartida(arcade.View):
         self.manager = arcade.gui.UIManager() # cria uma instância do gerenciador de interface do usuário, que será usado para gerenciar os elementos gráficos
         self.cliente = cliente
         self.thread = None
-        self.response = None
+        self.inicia_criacao = None
         self.setup() # chama o método setup para configurar a interface gráfica da visão.
 
     # define o método setup, que configura os componentes da interface gráfica.
@@ -71,10 +73,7 @@ class CriarPartida(arcade.View):
         # login_button = arcade.gui.UIFlatButton(text="Login", width=300)
         @criar_conta_button.event
         def on_click(event):
-            #chamar funcao criar partida
-            self.window.show_view(Aguardar(self.cliente))
-
-            # self.start_thread()
+            threading.Thread(target=self.enviar_informacao).start()
             
         vbox.add(criar_conta_button)
         
@@ -86,21 +85,22 @@ class CriarPartida(arcade.View):
         )
         
     # define o método on_update, chamado a cada atualização do quadro, por exemplo atualiza algum atributo.
-    def on_update(self, delta_time: float):
-        pass
-        # if self.response:
-        #     if self.response == '?':
-        #         self.window.show_view(Aguardar(self.cliente))
-        #     else:
-        #         self.msg.text = self.response
-        #         self.response = None
+    def on_update(self, delta_time: float):  
+        if self.inicia_criacao:
+            if self.inicia_criacao == "Inicia Criacao Partida":
+                self.window.show_view(AguardarJogadores(self.cliente))
+            else:
+                self.msg.text = self.inicia_criacao
+                self.inicia_criacao = None
+        
+        if self.cliente.mensagem_servidor:
+            if self.cliente.mensagem_servidor.startswith("convite"):
+                _,username_dono,id_partida = self.cliente.mensagem_servidor.split(',')
+                self.window.show_view(ResponderConvite(self.cliente,username_dono,id_partida))
                 
-        # if self.cliente.convite:
-        #     convite = self.cliente.convite
-        #     self.cliente.convite = None  # Limpa o convite após processá-lo
-        #     self.msg.text = f"receber convite {str(convite)}"
-        #     # self.window.show_view(ResponderConvite(self.cliente, convite))
-
+            self.msg.text = self.cliente.mensagem_servidor
+            self.inicia_criacao = None
+                
     # define o método on_show_view, chamado quando a visão é exibida.
     def on_show_view(self):
         # define a cor de fundo da janela.
@@ -119,9 +119,16 @@ class CriarPartida(arcade.View):
         self.clear()
         #desenhar        
         self.manager.draw()
+
+    # ações a serem executadas quando a janela é fechada
+    def on_close(self):
+        self.cliente.logout()
     
-    # def start_thread(self):
-    #     # if self.thread and self.thread.is_alive():
-    #     #     return  # evita múltiplas threads ao mesmo tempo
-    #     self.login_thread = threading.Thread(target=self.confirmar_dados)
-    #     self.login_thread.start()
+    def enviar_informacao(self):
+        username1 = self.username1_input.text
+        username2 = self.username2_input.text       
+        if username1 != "" and username2 != "":
+            self.inicia_criacao = "Inicia Criacao Partida"
+            self.cliente.criar_partida(username1, username2)
+        else:
+            self.inicia_criacao = "Preencha os Campos!"

@@ -6,7 +6,7 @@ from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POP
 import threading
 
 # define a classe LoginView que herda de arcade.View. Cada classe View representa uma tela ou seção da aplicação.
-class Aguardar(arcade.View): 
+class AguardarJogadores(arcade.View): 
     def __init__(self, cliente):
         super().__init__() # chama o construtor da classe base (arcade.View) para garantir que a visão seja corretamente inicializada.
         self.manager = arcade.gui.UIManager() # cria uma instância do gerenciador de interface do usuário, que será usado para gerenciar os elementos gráficos
@@ -21,7 +21,7 @@ class Aguardar(arcade.View):
         
         # campo de texto para mostrar mensagem
         self.username = arcade.gui.UITextArea(
-            text="Aguardando ...", width=500, height=40, font_size=20, font_name=AGRANDIR, text_color=AMARELO
+            text="Aguardando Jogadores ...", width=500, height=40, font_size=20, font_name=AGRANDIR, text_color=AMARELO
         )
         # adiciona o campo de texto ao layout vertical
         vbox.add(self.username)

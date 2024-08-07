@@ -272,6 +272,7 @@ def convidar_jogador(username, host, id_partida):
                     enviar_mensagem(username, f'convite_partida,{host},{id_partida}')
 
 def criar_partida(username_dono, username2, username3):
+    
     global id_partida
     id_partida += 1
     id = id_partida
@@ -308,7 +309,6 @@ def criar_partida(username_dono, username2, username3):
 
     mensagem = 'nao foi possivel criar partida'
     enviar_mensagem(username_dono, mensagem) # sai da aguardando pro inicio
-
 
 # FUNÇÕES AUXILIARES
 def enviar_mensagem(username, mensagem):

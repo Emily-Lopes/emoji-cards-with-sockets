@@ -4,7 +4,6 @@ class Interface:
         self.username = None
         self.cliente.set_convite(self.manipular_convite)
 
-
     def manipular_convite(self, host, id_partida):
         print(f"Convite de partida do usuario: {host}")
         return f'resposta_convite,{self.username},{id_partida},aceito'
