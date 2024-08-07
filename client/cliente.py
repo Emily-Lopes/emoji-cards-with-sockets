@@ -3,7 +3,7 @@ import threading
 from collections import Counter
 import json
 
-class Client:
+class Cliente:
     def __init__(self, server_ip="127.0.0.1", server_porta=5000):
         self.__server_ip = server_ip
         self.__server_porta = server_porta
@@ -11,6 +11,9 @@ class Client:
         self.__username = None
 
         self.__convite = None
+    
+    def get_username(self):
+        return self.__username
 
     # Funções para manipular o recebimento de convite de uma partida
     def set_convite(self, convite):
@@ -31,8 +34,7 @@ class Client:
                     request = server_socket.recv(self.__buffer).decode('utf-8')
                     if request:
                         thread = threading.Thread(target=self.__manipular_mensagem_convite, args=(request,))
-                        thread.start()
-                        
+                        thread.start()    
                     
                 except Exception as e:
                     print(f"Erro ao ouvir mensagem de convite: \n{e}\n")
@@ -128,14 +130,14 @@ class Client:
                 return True, response
             return False, response
         except Exception as e:
-            print(f"Erro ao criar conta:\n{e}")
-            return False, None
+            return False, f"Erro ao criar conta:{str(e)}"
         finally:
             if client:
                 self.__fechar_conexao_servidor(client)
 
 
     def login(self, username, senha):
+        print(username,senha)
         client = None
         try:
             client = self.__criar_conexao_servidor()
@@ -156,7 +158,6 @@ class Client:
             return False, response
         except Exception as e:
             return False, f"Erro ao realizar login:{str(e)}"
-
 
     def logout(self):
         client = None

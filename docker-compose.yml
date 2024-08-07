@@ -1,18 +1,18 @@
 services:
   database-server:
-    container_name: db-server
-    build: db-server
+    container_name: server-db
+    build: server-db
     volumes:
-      - ./db-server:/usr/local/ccf355/db-server
-    working_dir: /usr/local/ccf355/db-server
+      - ./server-db:/usr/local/ccf355/server-db
+    working_dir: /usr/local/ccf355/server-db
     network_mode: host
 
   application-server:
-    container_name: app-server
-    build: app-server
+    container_name: server-app
+    build: server-app
     volumes:
-      - ./app-server:/usr/local/ccf355/app-server
-    working_dir: /usr/local/ccf355/app-server
+      - ./server-app:/usr/local/ccf355/server-app
+    working_dir: /usr/local/ccf355/server-app
     network_mode: host
 
   client-jogador1:
@@ -20,9 +20,8 @@ services:
     build: client
     environment:
       - DISPLAY=$DISPLAY
-      - CLIENT_NAME=Julia
     volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix
+      # - /tmp/.X11-unix:/tmp/.X11-unix
       - ./client:/usr/local/ccf355/client
     working_dir: /usr/local/ccf355/client
     network_mode: host
@@ -32,7 +31,6 @@ services:
   #   build: client
   #   environment:
   #     - DISPLAY=$DISPLAY
-  #     - CLIENT_NAME=Claudio
   #   volumes:
   #     - /tmp/.X11-unix:/tmp/.X11-unix
   #     - ./client:/usr/local/ccf355/client
@@ -44,7 +42,6 @@ services:
   #     build: client
   #     environment:
   #       - DISPLAY=$DISPLAY
-  #       - CLIENT_NAME=Claudio
   #     volumes:
   #       - /tmp/.X11-unix:/tmp/.X11-unix
   #       - ./client:/usr/local/ccf355/client
