@@ -1,6 +1,6 @@
 import socket
 import threading
-from client.lidarSocket import ManipularSocket
+from lidarSocket import ManipularSocket
 import random
 from time import sleep
 

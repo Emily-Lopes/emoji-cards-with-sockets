@@ -3,14 +3,13 @@ from interface_grafica.telas.login import Login
 
 from interface_grafica.resources.constantes import LARGURA_TELA, ALTURA_TELA, TITULO
 
-from cliente import Cliente
+from client import Client
 
 def main():
     # cria uma instância da janela com 800x600 pixels, o título configurado para incluir o nome do cliente, e permite que a janela seja redimensionada.
     window = arcade.Window(LARGURA_TELA, ALTURA_TELA, TITULO, resizable=True)
-    # window = Window(fullscreen=True, resizable=False) #
     
-    cliente = Cliente()
+    cliente = Client()
     
     # cria uma instância da visão principal 
     main_view = Login(cliente)
@@ -22,5 +21,4 @@ def main():
     arcade.run()
 
 if __name__ == "__main__":
-    import sys
-    main(*sys.argv[1:])
+    main()

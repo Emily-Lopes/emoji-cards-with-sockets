@@ -1,4 +1,4 @@
-from client.client import Client
+from client import Client
 import threading
 import random
 import time

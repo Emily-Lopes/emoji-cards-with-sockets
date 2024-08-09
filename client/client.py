@@ -1,7 +1,7 @@
 import threading
 from collections import Counter
 import json
-from client.listenServer import ListenServer
+from listenServer import ListenServer
 import ast
 
 class Client(ListenServer):
