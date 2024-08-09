@@ -89,37 +89,16 @@ class Login(arcade.View):
         #auxiliar:
         vbox = arcade.gui.UIBoxLayout()
         self.msg = arcade.gui.UITextArea(
-            text="", width=450, height=40, font_size=8
+            text="", width=450, height=40, font_size=10, font_name=POPPINS, text_color=arcade.color.RED
         )
         vbox.add(self.msg)
         
-        # Adiciona o layout à interface do usuário
         self.gerencia_entrada.add(
             arcade.gui.UIAnchorWidget(
                 anchor_x="center", anchor_y="top", child=vbox
             )
         )
-        
-
-    def on_show(self):
-        # habilita o gerenciador de interface, tornando os widgets interativos.
-        self.gerencia_entrada.enable()
-
-    # define o método on_update, chamado a cada atualização do quadro, por exemplo atualiza algum atributo.
-    def on_update(self, delta_time: float):
-        if self.resposta:
-            if self.resposta == 'Login feito com sucesso!' or self.resposta == 'Usuário adicionado com sucesso!':
-                self.window.show_view(CriarPartida(self.cliente))
-            else:
-                self.msg.text = self.resposta
-                self.resposta = None
-        
-    # define o método on_hide_view, chamado quando a visão é escondida. Desativa o gerenciador de interface.
-    def on_hide_view(self):
-        # desativa o gerenciador de interface, tornando os widgets não interativos.
-        self.gerencia_entrada.disable()
-        
-        
+  
     def on_draw(self):
         arcade.start_render()
 
@@ -165,7 +144,26 @@ class Login(arcade.View):
                     # self.window.show_view(prox_tela)
                     botao['action']()
                     break 
+       
+    # define o método on_update, chamado a cada atualização do quadro, por exemplo atualiza algum atributo.
+    def on_update(self, delta_time: float):
+        if self.resposta:
+            if self.resposta == 'Login feito com sucesso!' or self.resposta == 'Usuário adicionado com sucesso!':
+                self.window.show_view(CriarPartida(self.cliente))
+            else:
+                self.msg.text = self.resposta
+                self.resposta = None
         
+    def on_show(self):
+        # habilita o gerenciador de interface, tornando os widgets interativos.
+        self.gerencia_entrada.enable()
+
+    # define o método on_hide_view, chamado quando a visão é escondida. Desativa o gerenciador de interface.
+    def on_hide_view(self):
+        # desativa o gerenciador de interface, tornando os widgets não interativos.
+        self.gerencia_entrada.disable()
+        
+   
     def login(self):
         threading.Thread(target=self.comunicar_confirmar_login).start()
 

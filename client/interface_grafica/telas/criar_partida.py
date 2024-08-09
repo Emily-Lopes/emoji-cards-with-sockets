@@ -5,86 +5,137 @@ from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POP
 
 import threading
 
-from .aguardar_jogadores import AguardarJogadores
+from ..telas.perfil import Perfil
+from ..telas.aguardar_jogadores import AguardarJogadores
 from ..telas.responder_convite import ResponderConvite
 
-#como é a tela que o cliente é direcionado quando faz login/cria conta, é onde vai lidar com convites
-class CriarPartida(arcade.View): 
-    def __init__(self, cliente):
-        super().__init__() # chama o construtor da classe base (arcade.View) para garantir que a visão seja corretamente inicializada.
-        self.manager = arcade.gui.UIManager() # cria uma instância do gerenciador de interface do usuário, que será usado para gerenciar os elementos gráficos
+class CriarPartida(arcade.View):
+    def __init__(self,cliente):
+        super().__init__()
+
+        arcade.set_background_color(AZUL)
+
+        self.botoes = []
+        self.fundo_campo_jogador1 = None
+        self.fundo_campo_jogador2 = None
+
+        self.gerencia_entrada = arcade.gui.UIManager()
+        # self.gerencia_entrada.enable()
+        
+        #atributos comunicacao:
         self.cliente = cliente
-        self.thread = None
         self.inicia_criacao = None
+        
         self.setup() # chama o método setup para configurar a interface gráfica da visão.
 
-    # define o método setup, que configura os componentes da interface gráfica.
     def setup(self):
-        # cria um layout vertical para organizar os widgets (elementos gráficos)
-        vbox = arcade.gui.UIBoxLayout()
         
-        # cria um campo de texto (UITextArea) que exibirá mensagens. define suas dimensões e o tamanho da fonte.
-        self.exibir_username = arcade.gui.UITextArea(
-            text=self.cliente.get_username(), width=150, height=40, font_size=12, text_color=AMARELO
+        self.campo_jogador1 = arcade.gui.UIInputText(
+            text = '',
+            width = 280,
+            text_color = arcade.color.WHITE,
+            font_name = POPPINS
         )
-        vbox.add(self.exibir_username)
         
-        # campo de texto para mostrar mensagem
-        self.username1 = arcade.gui.UITextArea(
-            text="username_1", width=150, height=40, font_size=14, font_name=POPPINS
-        )
-        # adiciona o campo de texto ao layout vertical
-        vbox.add(self.username1)
-
-        self.username1_input = arcade.gui.UIInputText(
-            text="", width=300, height=40, font_size=14, font_name=POPPINS, text_color=(255,255,255,255)
-        )
-        vbox.add(self.username1_input)
-        
-        self.username2 = arcade.gui.UITextArea(
-            text="username_2", width=150, height=40, font_size=14, font_name=POPPINS
-        )
-        # adiciona o campo de texto ao layout vertical
-        vbox.add(self.username2)
-
-        self.username2_input = arcade.gui.UIInputText(
-            text="", width=300, height=40, font_size=14, font_name=POPPINS, text_color=(255,255,255,255)
-        )
-        vbox.add(self.username2_input)
-
-        # cria um campo de texto (UITextArea) que exibirá mensagens. define suas dimensões e o tamanho da fonte.
-        self.msg = arcade.gui.UITextArea(
-            text="", width=450, height=40, font_size=8
-        )
-        vbox.add(self.msg)
-        
-        criar_conta_button = arcade.gui.UIFlatButton(
-            text="CRIAR PARTIDA", width=300, style={
-                                            "font_name": AGRANDIR,
-                                            "font_size": 14,
-                                            "font_color": AZUL,
-                                            "border_width": 3,
-                                            "border_color": arcade.color.WHITE,
-                                            "bg_color": AMARELO
-                                        }
-        )
-
-        # login_button = arcade.gui.UIFlatButton(text="Login", width=300)
-        @criar_conta_button.event
-        def on_click(event):
-            threading.Thread(target=self.enviar_informacao).start()
-            
-        vbox.add(criar_conta_button)
-        
-        # Adiciona o layout à interface do usuário
-        self.manager.add(
+        self.gerencia_entrada.add(
             arcade.gui.UIAnchorWidget(
-                anchor_x="center_x", anchor_y="center_y", child=vbox
+                anchor_x="left",
+                anchor_y="bottom",
+                align_x=LARGURA_TELA//2 - 140,
+                align_y=338,
+                child=self.campo_jogador1
+            )
+        )
+
+        self.campo_jogador2 = arcade.gui.UIInputText(
+            text='',
+            width=280,
+            text_color = arcade.color.WHITE,
+            font_name = POPPINS
+        )
+
+        self.gerencia_entrada.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="left",
+                anchor_y="bottom",
+                align_x=LARGURA_TELA//2 - 140,
+                align_y=238,
+                child=self.campo_jogador2
             )
         )
         
+        self.b_partida = arcade.load_texture("interface_grafica/resources/widgets/botoes/b-partida.png")
+        self.b_perfil = arcade.load_texture("interface_grafica/resources/widgets/botoes/b-perfil.png")
+        self.fundo_campo_jogador1 = arcade.load_texture("interface_grafica/resources/widgets/campo.png")
+        self.fundo_campo_jogador2 = arcade.load_texture("interface_grafica/resources/widgets/campo.png")
+
+        self.botoes.append({
+            'texture': self.b_partida,
+            'x': LARGURA_TELA//2,
+            'y': 200,
+            'width': 210,
+            'height': 80,
+            'action': self.criar_partida
+        })
+        self.botoes.append({
+            'texture': self.b_perfil,
+            'x': 970,
+            'y': 570,
+            'width': 35,
+            'height': 35,
+            'action': self.perfil
+        })
+        
+        #auxiliar:
+        vbox = arcade.gui.UIBoxLayout()
+        self.msg = arcade.gui.UITextArea(
+            text="", width=450, height=40, font_size=10, font_name=POPPINS, text_color=arcade.color.RED
+        )
+        vbox.add(self.msg)
+        
+        self.gerencia_entrada.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="center", anchor_y="top", child=vbox
+            )
+        )
+
+    def on_draw(self):
+        arcade.start_render()
+        
+        for botao in self.botoes:
+            if 'texture' in botao:
+                arcade.draw_texture_rectangle(botao['x'], botao['y'], botao['width'], botao['height'], 
+                                              botao['texture'])
+
+        if self.fundo_campo_jogador1:
+            arcade.draw_texture_rectangle(LARGURA_TELA//2, 380, 350, 
+                                          60, self.fundo_campo_jogador1)
+        if self.fundo_campo_jogador2:
+            arcade.draw_texture_rectangle(LARGURA_TELA//2, 280, 350, 
+                                          60, self.fundo_campo_jogador2)
+            
+        arcade.draw_text(self.cliente.get_username(), 950, 560,
+                         AMARELO, font_size=12, font_name=POPPINS,  anchor_x="right")
+        
+        arcade.draw_text("username 1", LARGURA_TELA//2, 415,
+                         arcade.color.WHITE, font_size=15, font_name=POPPINS, anchor_x="center")
+        arcade.draw_text("username 2", LARGURA_TELA//2, 315,
+                         arcade.color.WHITE, font_size=15, font_name=POPPINS, anchor_x="center")
+
+        self.gerencia_entrada.draw()
+                
+    def on_mouse_press(self, x, y, button, modifiers):
+        for botao in self.botoes:
+            if 'texture' in botao:
+                if (botao['x'] - botao['width'] / 2 < x < botao['x'] + botao['width'] / 2 and
+                        botao['y'] - botao['height'] / 2 < y < botao['y'] + botao['height'] / 2):
+                    botao['action']()
+                    break
+        
+            # define o método on_hide_view, chamado quando a visão é escondida. Desativa o gerenciador de interface.
+   
     # define o método on_update, chamado a cada atualização do quadro, por exemplo atualiza algum atributo.
-    def on_update(self, delta_time: float):  
+    def on_update(self, delta_time: float):
         if self.inicia_criacao:
             if self.inicia_criacao == "Inicia Criacao Partida":
                 self.window.show_view(AguardarJogadores(self.cliente))
@@ -99,33 +150,29 @@ class CriarPartida(arcade.View):
                 
             self.msg.text = self.cliente.mensagem_servidor
             self.inicia_criacao = None
-                
-    # define o método on_show_view, chamado quando a visão é exibida.
-    def on_show_view(self):
-        # define a cor de fundo da janela.
-        arcade.set_background_color(AZUL)
+                    
+    def on_show(self):
         # habilita o gerenciador de interface, tornando os widgets interativos.
-        self.manager.enable()
-        
-    # define o método on_hide_view, chamado quando a visão é escondida. Desativa o gerenciador de interface.
+        self.gerencia_entrada.enable()     
+
     def on_hide_view(self):
         # desativa o gerenciador de interface, tornando os widgets não interativos.
-        self.manager.disable()
-
-    # define o método on_draw, chamado a cada atualização da tela. Limpa a tela e desenha os widgets.
-    def on_draw(self):
-        # limpa o conteúdo da tela.
-        self.clear()
-        #desenhar        
-        self.manager.draw()
-
+        self.gerencia_entrada.disable()        
+    
     # ações a serem executadas quando a janela é fechada
     def on_close(self):
         self.cliente.logout()
-    
-    def enviar_informacao(self):
-        username1 = self.username1_input.text
-        username2 = self.username2_input.text       
+
+    def perfil(self):
+        self.window.show_view(Perfil(self.cliente)) 
+        
+
+    def criar_partida(self):
+        threading.Thread(target=self.comunicar_criar_partida).start()
+
+    def comunicar_criar_partida(self):
+        username1 = self.campo_jogador1.text
+        username2 = self.campo_jogador2.text      
         if username1 != "" and username2 != "":
             self.inicia_criacao = "Inicia Criacao Partida"
             self.cliente.criar_partida(username1, username2)
