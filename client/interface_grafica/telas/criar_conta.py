@@ -6,15 +6,6 @@ from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POP
 import threading
 
 from ..telas.criar_partida import CriarPartida
-
-import arcade
-import arcade.gui # submódulo gui do arcade, que fornece componentes para criar interfaces gráficas.
-
-from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR
-
-import threading
-
-from ..telas.criar_partida import CriarPartida
 from ..telas.responder_convite import ResponderConvite
 
 class CriarConta(arcade.View): 

@@ -5,52 +5,59 @@ from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POP
 
 import threading
 
-from .aguardar_jogadores import AguardarJogadores
+from ..telas.criar_conta import CriarConta
+from ..telas.criar_partida import CriarPartida
 from ..telas.responder_convite import ResponderConvite
 
-#como é a tela que o cliente é direcionado quando faz login/cria conta, é onde vai lidar com convites
-class CriarPartida(arcade.View): 
+
+# define a classe LoginView que herda de arcade.View. Cada classe View representa uma tela ou seção da aplicação.
+class Login(arcade.View): 
     def __init__(self, cliente):
         super().__init__() # chama o construtor da classe base (arcade.View) para garantir que a visão seja corretamente inicializada.
         self.manager = arcade.gui.UIManager() # cria uma instância do gerenciador de interface do usuário, que será usado para gerenciar os elementos gráficos
+        self.logo = arcade.load_texture(f"interface_grafica/resources/widgets/logo.png")
         self.cliente = cliente
-        self.thread = None
-        self.inicia_criacao = None
+        self.login_thread = None
+        self.login_result = None
         self.setup() # chama o método setup para configurar a interface gráfica da visão.
+    
+    #     self.cliente.set_convite(self.manipular_convite)
+
+    # def manipular_convite(self, host, id_partida):
+    #     # print(f"Convite de partida do usuario: {host}")
+    #     # return f'resposta_convite,{self.username},{id_partida},aceito'
+    #     self.show_view(ResponderConvite(self.cliente))
 
     # define o método setup, que configura os componentes da interface gráfica.
     def setup(self):
+        
         # cria um layout vertical para organizar os widgets (elementos gráficos)
         vbox = arcade.gui.UIBoxLayout()
         
-        # cria um campo de texto (UITextArea) que exibirá mensagens. define suas dimensões e o tamanho da fonte.
-        self.exibir_username = arcade.gui.UITextArea(
-            text=self.cliente.get_username(), width=150, height=40, font_size=12, text_color=AMARELO
+        # campo de texto para mostrar mensagem
+        self.username = arcade.gui.UITextArea(
+            text="username", width=100, height=40, font_size=14, font_name=POPPINS
         )
-        vbox.add(self.exibir_username)
+        # adiciona o campo de texto ao layout vertical
+        vbox.add(self.username)
+
+        self.username_input = arcade.gui.UIInputText(
+            text="", width=300, height=40, font_size=14, font_name=POPPINS, text_color=(255,255,255,255)
+        )
+        vbox.add(self.username_input)
         
         # campo de texto para mostrar mensagem
-        self.username1 = arcade.gui.UITextArea(
-            text="username_1", width=150, height=40, font_size=14, font_name=POPPINS
+        self.password = arcade.gui.UITextArea(
+            text="senha", width=100, height=40, font_size=14, font_name=POPPINS
         )
         # adiciona o campo de texto ao layout vertical
-        vbox.add(self.username1)
+        vbox.add(self.password)
 
-        self.username1_input = arcade.gui.UIInputText(
+        # Campo de entrar com password
+        self.password_input = arcade.gui.UIInputText(
             text="", width=300, height=40, font_size=14, font_name=POPPINS, text_color=(255,255,255,255)
         )
-        vbox.add(self.username1_input)
-        
-        self.username2 = arcade.gui.UITextArea(
-            text="username_2", width=150, height=40, font_size=14, font_name=POPPINS
-        )
-        # adiciona o campo de texto ao layout vertical
-        vbox.add(self.username2)
-
-        self.username2_input = arcade.gui.UIInputText(
-            text="", width=300, height=40, font_size=14, font_name=POPPINS, text_color=(255,255,255,255)
-        )
-        vbox.add(self.username2_input)
+        vbox.add(self.password_input)
 
         # cria um campo de texto (UITextArea) que exibirá mensagens. define suas dimensões e o tamanho da fonte.
         self.msg = arcade.gui.UITextArea(
@@ -58,8 +65,8 @@ class CriarPartida(arcade.View):
         )
         vbox.add(self.msg)
         
-        criar_conta_button = arcade.gui.UIFlatButton(
-            text="CRIAR PARTIDA", width=300, style={
+        login_button = arcade.gui.UIFlatButton(
+            text="LOGIN", width=100, style={
                                             "font_name": AGRANDIR,
                                             "font_size": 14,
                                             "font_color": AZUL,
@@ -70,36 +77,45 @@ class CriarPartida(arcade.View):
         )
 
         # login_button = arcade.gui.UIFlatButton(text="Login", width=300)
+        @login_button.event
+        def on_click(event):
+            threading.Thread(target=self.confirmar_dados).start()
+            
+        vbox.add(login_button)
+        
+        criar_conta_button = arcade.gui.UIFlatButton(
+            text="criar conta", width=100, style={
+                                            "font_name": POPPINS,
+                                            "font_size": 12,
+                                            "font_color": AMARELO,
+                                            "border_width": 1,
+                                            "border_color": AZUL,
+                                            "bg_color": AZUL
+                                        }
+        )
+
         @criar_conta_button.event
         def on_click(event):
-            threading.Thread(target=self.enviar_informacao).start()
+            self.window.show_view(CriarConta(self.cliente))
             
         vbox.add(criar_conta_button)
         
         # Adiciona o layout à interface do usuário
         self.manager.add(
             arcade.gui.UIAnchorWidget(
-                anchor_x="center_x", anchor_y="center_y", child=vbox
+                anchor_x="right", anchor_y="center_y", child=vbox
             )
         )
-        
+    
     # define o método on_update, chamado a cada atualização do quadro, por exemplo atualiza algum atributo.
-    def on_update(self, delta_time: float):  
-        if self.inicia_criacao:
-            if self.inicia_criacao == "Inicia Criacao Partida":
-                self.window.show_view(AguardarJogadores(self.cliente))
+    def on_update(self, delta_time: float):
+        if self.login_result:
+            if self.login_result == 'Login feito com sucesso!':
+                self.window.show_view(CriarPartida(self.cliente))
             else:
-                self.msg.text = self.inicia_criacao
-                self.inicia_criacao = None
-        
-        if self.cliente.mensagem_servidor:
-            if self.cliente.mensagem_servidor.startswith("convite"):
-                _,username_dono,id_partida = self.cliente.mensagem_servidor.split(',')
-                self.window.show_view(ResponderConvite(self.cliente,username_dono,id_partida))
-                
-            self.msg.text = self.cliente.mensagem_servidor
-            self.inicia_criacao = None
-                
+                self.msg.text = self.login_result
+                self.login_result = None
+
     # define o método on_show_view, chamado quando a visão é exibida.
     def on_show_view(self):
         # define a cor de fundo da janela.
@@ -116,18 +132,17 @@ class CriarPartida(arcade.View):
     def on_draw(self):
         # limpa o conteúdo da tela.
         self.clear()
-        #desenhar        
+                
+        arcade.draw_texture_rectangle(300, ALTURA_TELA // 2, self.logo.width,
+                                          self.logo.height, self.logo)
+            
         self.manager.draw()
-
-    # ações a serem executadas quando a janela é fechada
-    def on_close(self):
-        self.cliente.logout()
     
-    def enviar_informacao(self):
-        username1 = self.username1_input.text
-        username2 = self.username2_input.text       
-        if username1 != "" and username2 != "":
-            self.inicia_criacao = "Inicia Criacao Partida"
-            self.cliente.criar_partida(username1, username2)
+    def confirmar_dados(self):
+        username = self.username_input.text
+        password = self.password_input.text       
+        if username != "" and password != "":
+            s, msg = self.cliente.login(username, password)
+            self.login_result = msg
         else:
-            self.inicia_criacao = "Preencha os Campos!"
+            self.login_result = "Preencha os Campos!"

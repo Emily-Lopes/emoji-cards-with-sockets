@@ -3,146 +3,189 @@ import arcade.gui # submódulo gui do arcade, que fornece componentes para criar
 
 from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR
 
+from ..telas.criar_partida import CriarPartida
+
 import threading
 
-from ..telas.criar_conta import CriarConta
-from ..telas.criar_partida import CriarPartida
-from ..telas.responder_convite import ResponderConvite
-
-
-# define a classe LoginView que herda de arcade.View. Cada classe View representa uma tela ou seção da aplicação.
-class Login(arcade.View): 
+class Login(arcade.View):
     def __init__(self, cliente):
-        super().__init__() # chama o construtor da classe base (arcade.View) para garantir que a visão seja corretamente inicializada.
-        self.manager = arcade.gui.UIManager() # cria uma instância do gerenciador de interface do usuário, que será usado para gerenciar os elementos gráficos
-        self.logo = arcade.load_texture(f"interface_grafica/resources/widgets/logo.png")
+        super().__init__()
+
+        arcade.set_background_color(AZUL)
+
+        self.logo = None
+        self.botoes = []
+        self.fundo_campo_nome = None
+        self.fundo_campo_senha = None
+
+        self.gerencia_entrada = arcade.gui.UIManager()
+        # self.gerencia_entrada.enable()
+
+        #atributos comunicacao:
         self.cliente = cliente
-        self.login_thread = None
-        self.login_result = None
+        self.resposta = None
+        
         self.setup() # chama o método setup para configurar a interface gráfica da visão.
-    
-    #     self.cliente.set_convite(self.manipular_convite)
 
-    # def manipular_convite(self, host, id_partida):
-    #     # print(f"Convite de partida do usuario: {host}")
-    #     # return f'resposta_convite,{self.username},{id_partida},aceito'
-    #     self.show_view(ResponderConvite(self.cliente))
-
-    # define o método setup, que configura os componentes da interface gráfica.
     def setup(self):
         
-        # cria um layout vertical para organizar os widgets (elementos gráficos)
+        self.campo_nome = arcade.gui.UIInputText(
+            text = '',
+            width = 270,
+            text_color = arcade.color.WHITE,
+            font_name = POPPINS
+        )
+        
+        self.gerencia_entrada.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="left",
+                anchor_y="bottom",
+                align_x=635,
+                align_y=313,
+                child=self.campo_nome
+            )
+        )
+
+        self.campo_senha = arcade.gui.UIInputText(
+            text='',
+            width=270,
+            text_color = arcade.color.WHITE,
+            font_name = POPPINS
+        )
+        
+        self.gerencia_entrada.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="left",
+                anchor_y="bottom",
+                align_x=635,
+                align_y=213,
+                child=self.campo_senha
+            )
+        )
+        
+        self.logo = arcade.load_texture("interface_grafica/resources/widgets/logo.png")
+        self.b_login = arcade.load_texture("interface_grafica/resources/widgets/botoes/b-login.png")
+        self.fundo_campo_nome = arcade.load_texture("interface_grafica/resources/widgets/campo.png")
+        self.fundo_campo_senha = arcade.load_texture("interface_grafica/resources/widgets/campo.png")
+
+        self.botoes.append({
+            'texture': self.b_login,
+            'x': 770,
+            'y': 180,
+            'width': 200,
+            'height': 75,
+            'action': self.login
+        })
+        self.botoes.append({
+            'text': "criar conta",
+            'x': 770,
+            'y': 110,
+            'font_size': 15,
+            'font_name': POPPINS,
+            'action': self.criar_conta
+        })
+        
+        
+        #auxiliar:
         vbox = arcade.gui.UIBoxLayout()
-        
-        # campo de texto para mostrar mensagem
-        self.username = arcade.gui.UITextArea(
-            text="username", width=100, height=40, font_size=14, font_name=POPPINS
-        )
-        # adiciona o campo de texto ao layout vertical
-        vbox.add(self.username)
-
-        self.username_input = arcade.gui.UIInputText(
-            text="", width=300, height=40, font_size=14, font_name=POPPINS, text_color=(255,255,255,255)
-        )
-        vbox.add(self.username_input)
-        
-        # campo de texto para mostrar mensagem
-        self.password = arcade.gui.UITextArea(
-            text="senha", width=100, height=40, font_size=14, font_name=POPPINS
-        )
-        # adiciona o campo de texto ao layout vertical
-        vbox.add(self.password)
-
-        # Campo de entrar com password
-        self.password_input = arcade.gui.UIInputText(
-            text="", width=300, height=40, font_size=14, font_name=POPPINS, text_color=(255,255,255,255)
-        )
-        vbox.add(self.password_input)
-
-        # cria um campo de texto (UITextArea) que exibirá mensagens. define suas dimensões e o tamanho da fonte.
         self.msg = arcade.gui.UITextArea(
             text="", width=450, height=40, font_size=8
         )
         vbox.add(self.msg)
         
-        login_button = arcade.gui.UIFlatButton(
-            text="LOGIN", width=100, style={
-                                            "font_name": AGRANDIR,
-                                            "font_size": 14,
-                                            "font_color": AZUL,
-                                            "border_width": 3,
-                                            "border_color": arcade.color.WHITE,
-                                            "bg_color": AMARELO
-                                        }
-        )
-
-        # login_button = arcade.gui.UIFlatButton(text="Login", width=300)
-        @login_button.event
-        def on_click(event):
-            threading.Thread(target=self.confirmar_dados).start()
-            
-        vbox.add(login_button)
-        
-        criar_conta_button = arcade.gui.UIFlatButton(
-            text="criar conta", width=100, style={
-                                            "font_name": POPPINS,
-                                            "font_size": 12,
-                                            "font_color": AMARELO,
-                                            "border_width": 1,
-                                            "border_color": AZUL,
-                                            "bg_color": AZUL
-                                        }
-        )
-
-        @criar_conta_button.event
-        def on_click(event):
-            self.window.show_view(CriarConta(self.cliente))
-            
-        vbox.add(criar_conta_button)
-        
         # Adiciona o layout à interface do usuário
-        self.manager.add(
+        self.gerencia_entrada.add(
             arcade.gui.UIAnchorWidget(
-                anchor_x="right", anchor_y="center_y", child=vbox
+                anchor_x="center", anchor_y="top", child=vbox
             )
         )
-    
+        
+
+    def on_show(self):
+        # habilita o gerenciador de interface, tornando os widgets interativos.
+        self.gerencia_entrada.enable()
+
     # define o método on_update, chamado a cada atualização do quadro, por exemplo atualiza algum atributo.
     def on_update(self, delta_time: float):
-        if self.login_result:
-            if self.login_result == 'Login feito com sucesso!':
+        if self.resposta:
+            if self.resposta == 'Login feito com sucesso!' or self.resposta == 'Usuário adicionado com sucesso!':
                 self.window.show_view(CriarPartida(self.cliente))
             else:
-                self.msg.text = self.login_result
-                self.login_result = None
-
-    # define o método on_show_view, chamado quando a visão é exibida.
-    def on_show_view(self):
-        # define a cor de fundo da janela.
-        arcade.set_background_color(AZUL)
-        # habilita o gerenciador de interface, tornando os widgets interativos.
-        self.manager.enable()
+                self.msg.text = self.resposta
+                self.resposta = None
         
     # define o método on_hide_view, chamado quando a visão é escondida. Desativa o gerenciador de interface.
     def on_hide_view(self):
         # desativa o gerenciador de interface, tornando os widgets não interativos.
-        self.manager.disable()
-
-    # define o método on_draw, chamado a cada atualização da tela. Limpa a tela e desenha os widgets.
+        self.gerencia_entrada.disable()
+        
+        
     def on_draw(self):
-        # limpa o conteúdo da tela.
-        self.clear()
-                
-        arcade.draw_texture_rectangle(300, ALTURA_TELA // 2, self.logo.width,
+        arcade.start_render()
+
+        if self.logo:
+            arcade.draw_texture_rectangle(300, ALTURA_TELA // 2, self.logo.width, 
                                           self.logo.height, self.logo)
-            
-        self.manager.draw()
-    
-    def confirmar_dados(self):
-        username = self.username_input.text
-        password = self.password_input.text       
+        if self.fundo_campo_nome:
+            arcade.draw_texture_rectangle(770, 355, 350, 
+                                          60, self.fundo_campo_nome)
+        if self.fundo_campo_senha:
+            arcade.draw_texture_rectangle(770, 255, 350, 
+                                          60, self.fundo_campo_senha)
+
+        for botao in self.botoes:
+            if 'texture' in botao:
+                arcade.draw_texture_rectangle(botao['x'], botao['y'], botao['width'], botao['height'], 
+                                              botao['texture'])
+            elif 'text' in botao:
+                arcade.draw_text(botao['text'], botao['x'], botao['y'], AMARELO, 
+                                 font_size=botao['font_size'], font_name=botao['font_name'], anchor_x="center")
+
+        arcade.draw_text("username", 770, 395,
+                         arcade.color.WHITE, font_size=15, font_name=AGRANDIR, anchor_x="center")
+        arcade.draw_text("senha", 770, 295,
+                         arcade.color.WHITE, font_size=15, font_name=POPPINS, anchor_x="center")
+
+        self.gerencia_entrada.draw()
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        self.msg.text = ""
+        for botao in self.botoes:
+            if 'texture' in botao:
+                if (botao['x'] - botao['width'] / 2 < x < botao['x'] + botao['width'] / 2 and
+                        botao['y'] - botao['height'] / 2 < y < botao['y'] + botao['height'] / 2):
+                    botao['action']()
+                    break
+            elif 'text' in botao:
+                text_width = 100
+                text_height = botao['font_size']
+                if (botao['x'] - text_width / 2 < x < botao['x'] + text_width / 2 and
+                        botao['y'] - text_height / 2 < y < botao['y'] + text_height / 2):
+                    # prox_tela = botao['action']()
+                    # self.window.show_view(prox_tela)
+                    botao['action']()
+                    break 
+        
+    def login(self):
+        threading.Thread(target=self.comunicar_confirmar_login).start()
+
+    def comunicar_confirmar_login(self):
+        username = self.campo_nome.text
+        password = self.campo_senha.text       
         if username != "" and password != "":
             s, msg = self.cliente.login(username, password)
-            self.login_result = msg
+            self.resposta = msg
         else:
-            self.login_result = "Preencha os Campos!"
+            self.resposta = "Preencha os Campos!"
+    
+    def criar_conta(self):
+        threading.Thread(target=self.comunicar_criar_conta).start()
+
+    def comunicar_criar_conta(self):
+        username = self.campo_nome.text
+        senha = self.campo_senha.text       
+        if username != "" and senha != "":
+            s, msg = self.cliente.criar_conta(username, senha)
+            self.resposta = msg
+        else:
+            self.resposta = "Preencha os Campos!"
