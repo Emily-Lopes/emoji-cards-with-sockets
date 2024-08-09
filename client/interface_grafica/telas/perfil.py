@@ -1,31 +1,33 @@
 import arcade
 import arcade.gui # submódulo gui do arcade, que fornece componentes para criar interfaces gráficas.
 
-from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR
+from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR, AGRANDIR_BOLD
 
 import threading
 from ..telas.aguardar_jogadores import AguardarJogadores
 # from ..telas.responder_convite import ResponderConvite
 
 class Perfil(arcade.View):
-    def __init__(self,cliente,info_perfil):
+    def __init__(self, cliente, info_perfil, login_view, criar_partida_view):
         super().__init__()
+        
+        self.back_to_login = login_view
+        self.criar_partida = criar_partida_view
                
         #atributos comunicacao:
         self.cliente = cliente
+        
         '''
-            info_perfil = {
-                    'colecao_cartas': colecao_cartas,
-                    'baralhos': baralhos,
-                    'qtd_baralhos': qtd_baralhos
-            }
-            '''
+        info_perfil = {
+                'colecao_cartas': colecao_cartas,
+                'baralhos': baralhos,
+                'qtd_baralhos': qtd_baralhos
+        }
+        '''
         self.colecao = info_perfil['colecao_cartas']
         self.qtd_baralhos = info_perfil['qtd_baralhos']
         self.baralhos = info_perfil['baralhos']
-        print(self.colecao)
-        print(self.baralhos)
-        
+
         arcade.set_background_color(AZUL)
 
         # Carrossel da Coleção
@@ -118,9 +120,9 @@ class Perfil(arcade.View):
                 'texture': self.b_montar,
                 'x': 825,
                 'y': 180,
-                'width': 200,
-                'height': 75,
-                'action': self.mudar_tela # tela de montar baralhos
+                'width': 150,
+                'height': 50,
+                'action': self.tela_montar_baralho # tela de montar baralhos
             })
 
         self.b_jogar = arcade.load_texture("interface_grafica/resources/widgets/botoes/b-jogar.png")
@@ -128,34 +130,38 @@ class Perfil(arcade.View):
             'texture': self.b_jogar,
             'x': LARGURA_TELA // 2,
             'y': 46,
-            'width': 190,
-            'height': 70,
-            'action': self.mudar_tela 
+            'width': 150,
+            'height': 50,
+            'action': self.tela_criar_partida 
         })
 
-        self.b_logout = arcade.load_texture("interface_grafica/resources/widgets/botoes/b-logout.png")
+        self.b_logout = arcade.load_texture("interface_grafica/resources/widgets/botoes/b-excluir.png")
         self.botoes.append({
             'texture': self.b_logout,
-            'x': 895,
+            'x': 970,
             'y': 570,
-            'width': 145,
-            'height': 50,
+            'width': 35,
+            'height': 35,
             'action': self.fazer_logout 
         })
-
+        
     def setup(self):
         pass
 
-    def ow_show(self):
+    def on_show_view(self):
         self.setup()
 
     def on_draw(self):
         arcade.start_render()  
+        
+        arcade.draw_text(self.cliente.get_username(), 945, 560,
+                    arcade.color.WHITE, font_size=12, font_name=POPPINS,  anchor_x="right")
 
         # Carrossel da Coleção
         arcade.draw_texture_rectangle(LARGURA_TELA // 2, 430, 950, 220, self.fundo_colecao)
         
-        arcade.draw_text("Coleção", 110, 550, AMARELO, font_size=25, font_name=POPPINS, anchor_x="center")
+        arcade.draw_text(f"Coleção", 30, 550, AMARELO, font_size=20, font_name=POPPINS, anchor_x="left")
+        arcade.draw_text(f"Você possui {len(self.colecao)} cartas =)", 945, 545, AMARELO, font_size=8, font_name=POPPINS, anchor_x="right")
 
         espacamento = 160
         largura_carta = 180
@@ -175,7 +181,10 @@ class Perfil(arcade.View):
         arcade.draw_texture_rectangle(LARGURA_TELA - 75, 430,
                                       50, 50, self.seta_direita)
         
-        arcade.draw_text("Baralhos", 110, 280, AMARELO, font_size=25, font_name=POPPINS, anchor_x="center")
+        arcade.draw_text("Baralhos", 30, 280, AMARELO, font_size=20, font_name=POPPINS, anchor_x="left")
+        
+        if len(self.baralhos) == 0:
+            arcade.draw_text("Você ainda não possui nenhum baralho montado =(", 30, 240, arcade.color.WHITE, font_size=10, font_name=POPPINS, anchor_x="left")
 
         # Carrossel do Baralho 1
         if self.baralho_1:
@@ -285,17 +294,16 @@ class Perfil(arcade.View):
 
         self.on_draw()
 
-    def mudar_tela(self):
-        prox_tela = AguardarJogadores(self.cliente) 
-        self.window.show_view(prox_tela)
-
     def fazer_logout(self):
-        # Novamente deu import circular (to-do: ver onde colocar o logout)
-
-        #prox_tela = Login() 
-        #self.window.show_view(prox_tela)
-        pass
-
+        self.cliente.logout()
+        self.window.show_view(self.back_to_login(self.cliente)) 
+    
+    def tela_montar_baralho(self):
+        print('mudar para tela montar baralho')
+    
+    def tela_criar_partida(self):
+        self.window.show_view(self.criar_partida(self.cliente, self.back_to_login)) 
+    
     def excluir_baralho(self):
         # Tentei excluir os baralhos da tela sem atualizar, mas fica dando vários errinhos
         # Então é melhor ao clicar em excluir, chama a função no back recarrega a página

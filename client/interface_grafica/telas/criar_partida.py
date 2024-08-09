@@ -152,7 +152,7 @@ class CriarPartida(arcade.View):
             self.msg.text = self.cliente.mensagem_servidor
             self.resposta = None
                     
-    def on_show(self):
+    def on_show_view(self):
         # habilita o gerenciador de interface, tornando os widgets interativos.
         self.gerencia_entrada.enable()     
 
@@ -164,6 +164,7 @@ class CriarPartida(arcade.View):
     # ações a serem executadas quando a janela é fechada
     def on_close(self):
         self.cliente.logout()
+
 
     def perfil(self):
     #     threading.Thread(target=self.comunicar_info_perfil).start()
@@ -178,7 +179,7 @@ class CriarPartida(arcade.View):
                     'qtd_baralhos': qtd_baralhos
             }
             '''
-            self.window.show_view(Perfil(self.cliente, info_perfil)) 
+            self.window.show_view(Perfil(self.cliente, info_perfil, self.back_to_login, CriarPartida)) 
         else:
             #ocorreu algum erro
             self.resposta = msg

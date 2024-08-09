@@ -154,7 +154,7 @@ class Login(arcade.View):
                 self.msg.text = self.resposta
                 self.resposta = None
         
-    def on_show(self):
+    def on_show_view(self):
         # habilita o gerenciador de interface, tornando os widgets interativos.
         self.gerencia_entrada.enable()
 
