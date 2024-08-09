@@ -7,7 +7,7 @@ from client import Client
 
 def main():
     # cria uma instância da janela com 800x600 pixels, o título configurado para incluir o nome do cliente, e permite que a janela seja redimensionada.
-    window = arcade.Window(LARGURA_TELA, ALTURA_TELA, TITULO, resizable=True)
+    window = arcade.Window(LARGURA_TELA, ALTURA_TELA, TITULO, resizable=False)
     
     cliente = Client()
     

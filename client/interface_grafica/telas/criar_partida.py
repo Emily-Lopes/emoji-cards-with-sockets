@@ -10,21 +10,22 @@ from ..telas.aguardar_jogadores import AguardarJogadores
 from ..telas.responder_convite import ResponderConvite
 
 class CriarPartida(arcade.View):
-    def __init__(self,cliente):
+    def __init__(self, cliente, login_view):
         super().__init__()
 
         arcade.set_background_color(AZUL)
+        
+        self.back_to_login = login_view
 
         self.botoes = []
         self.fundo_campo_jogador1 = None
         self.fundo_campo_jogador2 = None
 
         self.gerencia_entrada = arcade.gui.UIManager()
-        # self.gerencia_entrada.enable()
         
         #atributos comunicacao:
         self.cliente = cliente
-        self.inicia_criacao = None
+        self.resposta = None
         
         self.setup() # chama o método setup para configurar a interface gráfica da visão.
 
@@ -136,12 +137,12 @@ class CriarPartida(arcade.View):
    
     # define o método on_update, chamado a cada atualização do quadro, por exemplo atualiza algum atributo.
     def on_update(self, delta_time: float):
-        if self.inicia_criacao:
-            if self.inicia_criacao == "Inicia Criacao Partida":
+        if self.resposta:
+            if self.resposta == "Inicia Criacao Partida":
                 self.window.show_view(AguardarJogadores(self.cliente))
             else:
-                self.msg.text = self.inicia_criacao
-                self.inicia_criacao = None
+                self.msg.text = self.resposta
+                self.resposta = None
         
         if self.cliente.mensagem_servidor:
             if self.cliente.mensagem_servidor.startswith("convite"):
@@ -149,7 +150,7 @@ class CriarPartida(arcade.View):
                 self.window.show_view(ResponderConvite(self.cliente,username_dono,id_partida))
                 
             self.msg.text = self.cliente.mensagem_servidor
-            self.inicia_criacao = None
+            self.resposta = None
                     
     def on_show(self):
         # habilita o gerenciador de interface, tornando os widgets interativos.
@@ -159,14 +160,29 @@ class CriarPartida(arcade.View):
         # desativa o gerenciador de interface, tornando os widgets não interativos.
         self.gerencia_entrada.disable()        
     
+    
     # ações a serem executadas quando a janela é fechada
     def on_close(self):
         self.cliente.logout()
 
     def perfil(self):
-        self.window.show_view(Perfil(self.cliente)) 
-        
-
+    #     threading.Thread(target=self.comunicar_info_perfil).start()
+    # def comunicar_info_perfil(self):
+        s, msg = self.cliente.exibir_perfil()
+        if s == True:
+            info_perfil = msg
+            '''
+            info_perfil = {
+                    'colecao_cartas': colecao_cartas,
+                    'baralhos': baralhos,
+                    'qtd_baralhos': qtd_baralhos
+            }
+            '''
+            self.window.show_view(Perfil(self.cliente, info_perfil)) 
+        else:
+            #ocorreu algum erro
+            self.resposta = msg
+            
     def criar_partida(self):
         threading.Thread(target=self.comunicar_criar_partida).start()
 
@@ -174,7 +190,7 @@ class CriarPartida(arcade.View):
         username1 = self.campo_jogador1.text
         username2 = self.campo_jogador2.text      
         if username1 != "" and username2 != "":
-            self.inicia_criacao = "Inicia Criacao Partida"
+            self.resposta = "Inicia Criacao Partida"
             self.cliente.criar_partida(username1, username2)
         else:
-            self.inicia_criacao = "Preencha os Campos!"
+            self.resposta = "Preencha os Campos!"

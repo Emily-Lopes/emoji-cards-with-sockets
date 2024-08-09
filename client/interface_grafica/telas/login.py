@@ -149,7 +149,7 @@ class Login(arcade.View):
     def on_update(self, delta_time: float):
         if self.resposta:
             if self.resposta == 'Login feito com sucesso!' or self.resposta == 'Usuário adicionado com sucesso!':
-                self.window.show_view(CriarPartida(self.cliente))
+                self.window.show_view(CriarPartida(self.cliente, Login))
             else:
                 self.msg.text = self.resposta
                 self.resposta = None
@@ -162,10 +162,12 @@ class Login(arcade.View):
     def on_hide_view(self):
         # desativa o gerenciador de interface, tornando os widgets não interativos.
         self.gerencia_entrada.disable()
-        
    
     def login(self):
-        threading.Thread(target=self.comunicar_confirmar_login).start()
+        try:
+            threading.Thread(target=self.comunicar_confirmar_login).start()
+        except Exception as e:
+            self.resposta = f"Ocorreu um erro: {str(e)}"
 
     def comunicar_confirmar_login(self):
         username = self.campo_nome.text
@@ -174,10 +176,13 @@ class Login(arcade.View):
             s, msg = self.cliente.login(username, password)
             self.resposta = msg
         else:
-            self.resposta = "Preencha os Campos!"
+            self.resposta = "Preencha Todos os Campos!"
     
     def criar_conta(self):
-        threading.Thread(target=self.comunicar_criar_conta).start()
+        try:
+            threading.Thread(target=self.comunicar_criar_conta).start()
+        except Exception as e:
+            self.resposta = f"Ocorreu um erro: {str(e)}"
 
     def comunicar_criar_conta(self):
         username = self.campo_nome.text
@@ -186,4 +191,4 @@ class Login(arcade.View):
             s, msg = self.cliente.criar_conta(username, senha)
             self.resposta = msg
         else:
-            self.resposta = "Preencha os Campos!"
+            self.resposta = "Preencha Todos os Campos!"

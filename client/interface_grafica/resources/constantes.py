@@ -12,3 +12,6 @@ arcade.load_font(POPPINS)
 
 AGRANDIR = os.path.join(os.path.dirname(__file__), 'fontes', 'Agrandir.otf')
 arcade.load_font(AGRANDIR)
+
+AGRANDIR_BOLD = os.path.join(os.path.dirname(__file__), 'fontes', 'AgrandirBold.ttf')
+arcade.load_font(AGRANDIR_BOLD)
