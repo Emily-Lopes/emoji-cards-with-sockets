@@ -53,7 +53,8 @@ class ListenServer(ManipularSocket):
             self.mensagem_servidor = request
         
         elif request.startswith('fim_turno'):
-            #_, vencedor, atributo, id_partida, escolhas_cada_jogador = request.split(',',4)
+            
+            #_; vencedor; atributo; id_partida; escolhas_cada_jogador; pontuacao = request.split(';')
             self.mensagem_servidor = request
     
         elif request.startswith('fim_partida'):

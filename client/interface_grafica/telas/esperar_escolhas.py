@@ -4,7 +4,7 @@ import arcade.gui # submódulo gui do arcade, que fornece componentes para criar
 from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR, AGRANDIR_BOLD
 
 import threading
-from ..telas.montar_baralho import MontarBaralho
+from ..telas.vencedor_turno import VencedorTurno
 
 class EsperarEscolhas(arcade.View):
     def __init__(self, cliente, atributo_turno, pontuacao, id_partida, criar_partida_view, back_to_login):
@@ -101,13 +101,15 @@ class EsperarEscolhas(arcade.View):
             if self.cliente.mensagem_servidor.startswith("fim_turno"):
                 
                 #pega a mensagem e libera a variável compartilhada
-                _, vencedor, atributo, id_partida, escolhas_cada_jogador = self.cliente.mensagem_servidor.split(',', 4)
+                _, vencedor, novo_atributo, id_partida, escolhas_cada_jogador, pontuacao = self.cliente.mensagem_servidor.split(';')
                 self.cliente.mensagem_servidor = None
                 escolhas = eval(escolhas_cada_jogador)
-                print(vencedor)
-                print(atributo)
-                print(escolhas)
-                print(escolhas.keys())
+                pontuacao = eval(pontuacao)
+                
+                self.window.show_view(VencedorTurno(self.cliente, self.atributo, vencedor, escolhas, pontuacao, id_partida, novo_atributo, self.criar_partida_view, self.back_to_login)) 
+
+                
+                
                 
                 
  

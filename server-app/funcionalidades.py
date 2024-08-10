@@ -410,7 +410,7 @@ def determinar_ganhador_turno(id_partida, atributo_turno, usernames):
 
     novo_atributo = selecionar_atributo()
     
-    mensagem = f'fim_turno,{vencedor},{novo_atributo},{id_partida},{cartas_jogadas}'
+    mensagem = f"fim_turno;{vencedor};{novo_atributo};{id_partida};{cartas_jogadas};{partida['pontuacao']}"
 
     set_novo_turno(id_partida)
     partida['atributo_turno'] = novo_atributo
