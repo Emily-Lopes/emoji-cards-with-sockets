@@ -4,7 +4,7 @@ import arcade.gui # submódulo gui do arcade, que fornece componentes para criar
 from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR, AGRANDIR_BOLD
 
 import threading
-from ..telas.aguardar_jogadores import AguardarJogadores
+from ..telas.montar_baralho import MontarBaralho
 # from ..telas.responder_convite import ResponderConvite
 
 class Perfil(arcade.View):
@@ -24,6 +24,7 @@ class Perfil(arcade.View):
                 'qtd_baralhos': qtd_baralhos
         }
         '''
+        self.info_perfil = info_perfil
         self.colecao = info_perfil['colecao_cartas']
         self.qtd_baralhos = info_perfil['qtd_baralhos']
         self.baralhos = info_perfil['baralhos']
@@ -299,7 +300,7 @@ class Perfil(arcade.View):
         self.window.show_view(self.back_to_login(self.cliente)) 
     
     def tela_montar_baralho(self):
-        print('mudar para tela montar baralho')
+        self.window.show_view(MontarBaralho(self.cliente,self.info_perfil, Perfil, self.back_to_login, self.criar_partida)) 
     
     def tela_criar_partida(self):
         self.window.show_view(self.criar_partida(self.cliente, self.back_to_login)) 
