@@ -266,7 +266,7 @@ def criar_partida(username_dono, username2, username3):
     for username in usernames:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as bd_client:
             bd_client.connect((db_host, db_port))
-            request = f"get_colecao {username}"
+            request = f"get_baralhos {username}"
             bd_client.send(request.encode('utf-8'))
             user_baralho = bd_client.recv(1024).decode('utf-8')
 
@@ -407,7 +407,7 @@ def determinar_ganhador_turno(id_partida, atributo_turno, usernames):
 
     novo_atributo = selecionar_atributo()
     
-    mensagem = f'fim_turno,{vencedor},{carta},{novo_atributo},{id_partida}'
+    mensagem = f'fim_turno,{vencedor},{carta_vencedor},{novo_atributo},{id_partida}'
 
     set_novo_turno(id_partida)
     partida['atributo_turno'] = novo_atributo
