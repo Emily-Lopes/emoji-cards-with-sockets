@@ -5,7 +5,6 @@ from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POP
 
 import threading
 from ..telas.montar_baralho import MontarBaralho
-# from ..telas.responder_convite import ResponderConvite
 
 class Perfil(arcade.View):
     def __init__(self, cliente, info_perfil, login_view, criar_partida_view):

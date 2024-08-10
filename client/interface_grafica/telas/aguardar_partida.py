@@ -1,19 +1,22 @@
 import arcade
 import arcade.gui # submódulo gui do arcade, que fornece componentes para criar interfaces gráficas.
 
+import random
+
 from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR
 
-import threading
+from ..telas.turno import Turno
 
 # define a classe LoginView que herda de arcade.View. Cada classe View representa uma tela ou seção da aplicação.
 class AguardarPartida(arcade.View): 
     def __init__(self, cliente, criar_partida_view, back_to_login):
         super().__init__() # chama o construtor da classe base (arcade.View) para garantir que a visão seja corretamente inicializada.
         self.manager = arcade.gui.UIManager() # cria uma instância do gerenciador de interface do usuário, que será usado para gerenciar os elementos gráficos
+
         self.cliente = cliente
         self.criar_partida_view = criar_partida_view
         self.back_to_login = back_to_login
-        print(self.cliente.baralho_escolhido)
+
         self.setup() # chama o método setup para configurar a interface gráfica da visão.
 
     # define o método setup, que configura os componentes da interface gráfica.
@@ -41,13 +44,20 @@ class AguardarPartida(arcade.View):
         if self.cliente.mensagem_servidor:
             if self.cliente.mensagem_servidor.startswith("atributo_turno"):
                 
-                _, atributo, id_partida = self.cliente.mensagem_servidor.split(',')
+                _, atributo, id_partida, pontuacao = self.cliente.mensagem_servidor.split(',',3)
+                
+                pontuacao = eval(pontuacao)
                 
                 self.cliente.mensagem_servidor = None
                 
-                print(atributo)
+                #embaralha o baralho
+                print('baralho =',self.cliente.baralho_escolhido)
+                random.shuffle(self.cliente.baralho_escolhido)
+                print('embaralhado =',self.cliente.baralho_escolhido)
                 
-                
+                #muda para tela do primeiro turno: 
+                self.window.show_view(Turno(self.cliente, atributo, pontuacao, id_partida, self.criar_partida_view, self.back_to_login)) 
+                                         
 
     # define o método on_show_view, chamado quando a visão é exibida.
     def on_show_view(self):

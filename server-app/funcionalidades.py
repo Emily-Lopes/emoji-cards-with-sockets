@@ -297,13 +297,14 @@ def iniciar_partida(id_partida, username_dono, username2, username3):
     while(fim - inicio < 40):
         resposta_esperada = 'preparado'
         confirmacao_usuarios = get_confirmacao_resposta(info_partida, usernames, resposta_esperada)
-
+         
         if confirmacao_usuarios:
-            print(confirmacao_usuarios)
             break
 
         fim = time.time()
-
+    
+    print("confirmaram a mensagem")
+    
     if not confirmacao_usuarios:
         for username in usernames:
             mensagem = 'Erro ao gerenciar a partida'
@@ -313,7 +314,8 @@ def iniciar_partida(id_partida, username_dono, username2, username3):
         finalizar_partida(id_partida, usernames)
         return
 
-    mensagem = f'atributo_turno,{atributo},{id_partida}'
+    mensagem = f"atributo_turno,{atributo},{id_partida}, {partidas[id_partida]['pontuacao']}"
+    print(mensagem)
 
     for _ in range(7):
         for username in usernames:
@@ -395,20 +397,20 @@ def determinar_ganhador_turno(id_partida, atributo_turno, usernames):
     
     vencedor = comparar_atributos(atributos_cartas, atributo_turno)
 
-    if vencedor == 'empate':
-        mensagem = f'fim_turno,empate,none,{atributo_turno},{id_partida}'
-    else:
+    if vencedor != 'empate':
+        # mensagem = f'fim_turno,empate,none,{atributo_turno},{id_partida}'
+    # else:
         partida['pontuacao'][vencedor] += 1
         cartas_outros_jogadores = [cartas_jogadas[user] for user in usernames if user != vencedor]
         carta_ganha = random.choice(cartas_outros_jogadores)
         partida['cartas_ganhas'][vencedor].append(carta_ganha)
         
         carta_vencedor = cartas_jogadas[vencedor]
-        mensagem = f'fim_turno,{vencedor},{carta_vencedor},{atributo_turno},{id_partida}'
+        # mensagem = f'fim_turno,{vencedor},{carta_vencedor},{atributo_turno},{id_partida}'
 
     novo_atributo = selecionar_atributo()
     
-    mensagem = f'fim_turno,{vencedor},{carta_vencedor},{novo_atributo},{id_partida}'
+    mensagem = f'fim_turno,{vencedor},{novo_atributo},{id_partida},{cartas_jogadas}'
 
     set_novo_turno(id_partida)
     partida['atributo_turno'] = novo_atributo

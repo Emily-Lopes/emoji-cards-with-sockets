@@ -138,7 +138,11 @@ class EscolherBaralho(arcade.View):
 
     def confirmar_escolha(self):
         if self.baralho_selecionado:
+            print(self.baralho_selecionado)
+            print(self.baralhos[self.baralho_selecionado-1])
             self.cliente.baralho_escolhido = self.baralhos[self.baralho_selecionado-1]
+            print(self.cliente.baralho_escolhido)
+            print("avisou_escolha")
             self.cliente.responder_baralho_escolhido(self.id_partida)
             self.window.show_view(AguardarPartida(self.cliente, self.criar_partida_view, self.back_to_login)) 
         else:

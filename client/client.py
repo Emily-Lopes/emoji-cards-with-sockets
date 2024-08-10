@@ -254,3 +254,4 @@ class Client(ListenServer):
                 contador[emocao] += 1
         
         return resultado
+        

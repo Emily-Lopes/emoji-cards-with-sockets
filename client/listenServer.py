@@ -49,12 +49,11 @@ class ListenServer(ManipularSocket):
             
         #tem que voltar e olhar resposta
         elif request.startswith('atributo_turno'):
-            #_, atributo, id_partida = request.split(',')
-            #self.mensagem_servidor = f"partida_criada,{id_partida},{colecao}"
+            # _, atributo, id_partida, pontuacao = request.split(',')
             self.mensagem_servidor = request
         
         elif request.startswith('fim_turno'):
-            #_, vencedor, carta_vencedor, atributo, id_partida = request.split(',')
+            #_, vencedor, atributo, id_partida, escolhas_cada_jogador = request.split(',',4)
             self.mensagem_servidor = request
     
         elif request.startswith('fim_partida'):
@@ -78,6 +77,7 @@ class ListenServer(ManipularSocket):
         self.fechar_conexao(server_socket)
 
     
+    #avisar que jogador já escolheu o baralho, mas servidor não precisa saber qual foi
     def responder_baralho_escolhido(self, id_partida):
         server_socket = self.criar_conexao()
         request = f'escolha_baralho,{self.username},{id_partida}'

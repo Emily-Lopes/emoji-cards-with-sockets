@@ -54,6 +54,7 @@ class AguardarJogadores(arcade.View):
                 else:
                     #escolher um baralho aleatorio
                     self.cliente.baralho_escolhido = self.cliente.gerar_baralho_aleatorio()
+                    print("avisou_escolha")
                     self.cliente.responder_baralho_escolhido(id_partida)
                     self.window.show_view(AguardarPartida(self.cliente, self.criar_partida_view, self.back_to_login)) 
             
