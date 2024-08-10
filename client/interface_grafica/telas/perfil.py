@@ -16,6 +16,7 @@ class Perfil(arcade.View):
                
         #atributos comunicacao:
         self.cliente = cliente
+        self.mensagem = None
         
         '''
         info_perfil = {
@@ -28,6 +29,8 @@ class Perfil(arcade.View):
         self.colecao = info_perfil['colecao_cartas']
         self.qtd_baralhos = info_perfil['qtd_baralhos']
         self.baralhos = info_perfil['baralhos']
+
+        self.gerencia_entrada = arcade.gui.UIManager()
 
         arcade.set_background_color(AZUL)
 
@@ -59,13 +62,13 @@ class Perfil(arcade.View):
                 self.baralho_1.append(arcade.load_texture(f"interface_grafica/resources/cartas/{emocao}.png"))
         
         # Carrossel do Baralho 2
-        if self.qtd_baralhos >= 1:
+        if self.qtd_baralhos >= 2:
             for emocao in self.baralhos[1]:
                 self.baralho_2.append(arcade.load_texture(f"interface_grafica/resources/cartas/{emocao}.png"))
 
         # Carrossel do Baralho 3
-        if self.qtd_baralhos >= 1:
-            for emocao in self.baralhos[1]:
+        if self.qtd_baralhos == 3:
+            for emocao in self.baralhos[2]:
                 self.baralho_3.append(arcade.load_texture(f"interface_grafica/resources/cartas/{emocao}.png"))
 
         # Se existe os baralhos eles são apresentados, se só existem 2 o botão montar é apresentado
@@ -81,7 +84,7 @@ class Perfil(arcade.View):
                 'y': 260,
                 'width': 38,
                 'height': 38,
-                'action': self.excluir_baralho
+                'action': lambda: self.excluir_baralho(0)
             })
 
         if self.baralho_2:
@@ -96,7 +99,7 @@ class Perfil(arcade.View):
                 'y': 260,
                 'width': 38,
                 'height': 38,
-                'action': self.excluir_baralho
+                'action': lambda: self.excluir_baralho(1)
             })
 
         if self.baralho_3:
@@ -111,7 +114,7 @@ class Perfil(arcade.View):
                 'y': 260,
                 'width': 38,
                 'height': 38,
-                'action': self.excluir_baralho
+                'action': lambda: self.excluir_baralho(2)
             })
 
         else:
@@ -146,12 +149,38 @@ class Perfil(arcade.View):
             'action': self.fazer_logout 
         })
         
+        self.setup() # chama o método setup para configurar a interface gráfica da visão.
+
+        
     def setup(self):
-        pass
+        #auxiliar:
+        vbox = arcade.gui.UIBoxLayout()
+        self.msg = arcade.gui.UITextArea(
+            text="", width=450, height=40, font_size=10, font_name=POPPINS, text_color=arcade.color.RED
+        )
+        vbox.add(self.msg)
+        
+        self.gerencia_entrada.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="center", anchor_y="top", child=vbox
+            )
+        )
 
     def on_show_view(self):
-        self.setup()
+        # habilita o gerenciador de interface, tornando os widgets interativos.
+        self.gerencia_entrada.enable()
 
+    # define o método on_hide_view, chamado quando a visão é escondida. Desativa o gerenciador de interface.
+    def on_hide_view(self):
+        # desativa o gerenciador de interface, tornando os widgets não interativos.
+        self.gerencia_entrada.disable()
+    
+    # define o método on_update, chamado a cada atualização do quadro, por exemplo atualiza algum atributo.
+    def on_update(self, delta_time: float):
+        if self.mensagem:
+            self.msg.text = self.mensagem
+            self.mensagem = None
+        
     def on_draw(self):
         arcade.start_render()  
         
@@ -198,7 +227,7 @@ class Perfil(arcade.View):
 
             for i in range(cartas_visiveis_baralhos):
                 indice_carta_b1 = (self.indice_inicial_b1 + i) % len(self.baralho_1)
-                carta = self.cartas[indice_carta_b1]
+                carta = self.baralho_1[indice_carta_b1]
                 pos_x = 125 + i * espacamento
                 pos_y = 180
 
@@ -220,7 +249,7 @@ class Perfil(arcade.View):
 
             for i in range(cartas_visiveis_baralhos):
                 indice_carta_b2 = (self.indice_inicial_b2 + i) % len(self.baralho_2)
-                carta = self.cartas[indice_carta_b2]
+                carta = self.baralho_2[indice_carta_b2]
                 pos_x = 443 + i * espacamento
                 pos_y = 178
 
@@ -242,7 +271,7 @@ class Perfil(arcade.View):
 
             for i in range(cartas_visiveis_baralhos):
                 indice_carta_b3 = (self.indice_inicial_b3 + i) % len(self.baralho_3)
-                carta = self.cartas[indice_carta_b3]
+                carta = self.baralho_3[indice_carta_b3]
                 pos_x = 765 + i * espacamento
                 pos_y = 180
 
@@ -256,8 +285,11 @@ class Perfil(arcade.View):
         for botao in self.botoes:
             if 'texture' in botao:
                 arcade.draw_texture_rectangle(botao['x'], botao['y'], botao['width'], botao['height'], botao['texture'])
-            
+        
+        self.gerencia_entrada.draw()
+        
     def on_mouse_press(self, x, y, button, modifiers):
+        self.msg.text = ""
         for botao in self.botoes:
             if 'texture' in botao:
                 if (botao['x'] - botao['width'] / 2 < x < botao['x'] + botao['width'] / 2 and
@@ -305,11 +337,11 @@ class Perfil(arcade.View):
     def tela_criar_partida(self):
         self.window.show_view(self.criar_partida(self.cliente, self.back_to_login)) 
     
-    def excluir_baralho(self):
-        # Tentei excluir os baralhos da tela sem atualizar, mas fica dando vários errinhos
-        # Então é melhor ao clicar em excluir, chama a função no back recarrega a página
-        # e quando for buscar por determinado baralho vai estar None e não vai apresentar
-
-        self.__init__()  
-        self.setup() 
-        self.window.show_view(self)
+    def excluir_baralho(self, indice):
+        s, msg = self.cliente.excluir_baralho(indice)
+        if s == True:
+            info_perfil = msg
+            self.window.show_view(Perfil(self.cliente, info_perfil, self.back_to_login, self.criar_partida)) 
+        else:
+            self.mensagem = msg
+        

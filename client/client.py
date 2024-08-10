@@ -19,8 +19,8 @@ class Client(ListenServer):
         contagem = Counter(baralho)
         for count in contagem.values():
             if count > 3:
-                return False, "Teve ter no máximo 3 cartas da mesma emoção"
-        return True, None
+                return False, "Deve ter no máximo 3 cartas da mesma emoção"
+        return True, "Baralho OK!"
     
 
     def __manipular_baralhos(self, baralhos):
@@ -143,8 +143,7 @@ class Client(ListenServer):
                 return True, response
             return False, response
         except Exception as e:
-            print(f"Erro  ao adicionar baralho:\n{e}")
-            return False, None
+            return False, f"Erro  ao adicionar baralho:{str(e)}"
         finally:
             if client:
                 self.fechar_conexao(client)
@@ -173,7 +172,7 @@ class Client(ListenServer):
 
             if resposta == "excluido":
                 return True, perfil
-            return False, perfil
+            return False, resposta
 
         except Exception as e:
             print(f"Erro  ao excluir baralho: {e}")

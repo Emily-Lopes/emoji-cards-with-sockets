@@ -165,7 +165,6 @@ class CriarPartida(arcade.View):
     def on_close(self):
         self.cliente.logout()
 
-
     def perfil(self):
     #     threading.Thread(target=self.comunicar_info_perfil).start()
     # def comunicar_info_perfil(self):

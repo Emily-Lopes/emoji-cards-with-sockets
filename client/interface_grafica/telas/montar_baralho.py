@@ -5,19 +5,20 @@ from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POP
 
 import threading
 
-from ..telas.escolher_baralho import EscolherBaralho
-
 class MontarBaralho(arcade.View):
     def __init__(self, cliente, info_usuario, perfil_view, back_to_login, back_to_criar_partida):
         super().__init__()
         
         self.cliente = cliente
+        self.info_usuario = info_usuario
         self.colecao_usuario = info_usuario['colecao_cartas']
         
         # pra poder voltar para tela perfil:
         self.back_to_perfil = perfil_view
         self.login_view = back_to_login
         self.criar_partida_view = back_to_criar_partida
+        
+        self.mensagem = None
 
         arcade.set_background_color(AZUL)
 
@@ -29,7 +30,7 @@ class MontarBaralho(arcade.View):
         self.mapeamento_cartas = {}
         
         # Lista para armazenar os nomes dos emojis selecionados
-        self.nomes_baralho = []
+        self.escolhas = []
 
         for emocao in self.colecao_usuario:
             carta = arcade.load_texture(f"interface_grafica/resources/cartas/{emocao}.png")
@@ -52,16 +53,36 @@ class MontarBaralho(arcade.View):
             'texture': self.b_montar,
             'x': LARGURA_TELA // 2,
             'y': 46,
-            'width': 190,
-            'height': 70,
+            'width': 150,
+            'height': 50,
             'action': self.salvar_baralho 
         })
+        
+        self.gerencia_entrada = arcade.gui.UIManager()
+        self.setup()
 
     def setup(self):
-        pass
+        #auxiliar:
+        vbox = arcade.gui.UIBoxLayout()
+        self.msg = arcade.gui.UITextArea(
+            text="", width=450, height=40, font_size=12, font_name=POPPINS, text_color=arcade.color.RED
+        )
+        vbox.add(self.msg)
+        
+        self.gerencia_entrada.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="center", anchor_y="top", child=vbox
+            )
+        )
 
-    def ow_show(self):
-        self.setup()
+    def on_show_view(self):
+        # habilita o gerenciador de interface, tornando os widgets interativos.
+        self.gerencia_entrada.enable()
+
+    # define o método on_hide_view, chamado quando a visão é escondida. Desativa o gerenciador de interface.
+    def on_hide_view(self):
+        # desativa o gerenciador de interface, tornando os widgets não interativos.
+        self.gerencia_entrada.disable()
 
     def on_draw(self):
         arcade.start_render()  
@@ -103,7 +124,11 @@ class MontarBaralho(arcade.View):
             if 'texture' in botao:
                 arcade.draw_texture_rectangle(botao['x'], botao['y'], botao['width'], botao['height'], botao['texture'])
             
+        self.gerencia_entrada.draw()
+        
     def on_mouse_press(self, x, y, button, modifiers):
+        self.msg.text = ""
+        
         for botao in self.botoes:
             if 'texture' in botao:
                 if (botao['x'] - botao['width'] / 2 < x < botao['x'] + botao['width'] / 2 and
@@ -134,7 +159,10 @@ class MontarBaralho(arcade.View):
 
                 if len(self.baralho) < 9: 
                     self.baralho.append(emoji_correspondente)
-                    self.nomes_baralho.append(emoji_correspondente['nome'])
+                    self.escolhas.append(emoji_correspondente['nome'])
+                
+                else:
+                    self.mensagem = "Você já escolheu 9 cartas!"
 
         espacamento_baralho = 100
         largura_carta_baralho = 60
@@ -146,10 +174,28 @@ class MontarBaralho(arcade.View):
             if (pos_x - largura_carta_baralho / 2 < x < pos_x + largura_carta_baralho / 2 and
                     pos_y - altura_carta_baralho / 2 < y < pos_y + altura_carta_baralho / 2):
                 self.baralho.pop(i)
-                self.nomes_baralho.pop(i)
+                self.escolhas.pop(i)
                 break
 
         self.on_draw()
 
+    # define o método on_update, chamado a cada atualização do quadro, por exemplo atualiza algum atributo.
+    def on_update(self, delta_time: float):
+        if self.mensagem:
+            self.msg.text = self.mensagem
+            self.mensagem = None
+        
     def salvar_baralho(self):
-        print(self.nomes_baralho)
+        s, msg = self.cliente.adicionar_baralho(self.escolhas)
+        if s == True:
+            #atualizar info:
+            print(self.info_usuario['baralhos'])
+            self.info_usuario['baralhos'].append(self.escolhas)
+            print(self.info_usuario['baralhos'])
+            self.info_usuario['qtd_baralhos'] += 1
+            
+            #voltar pro perfil
+            self.window.show_view(self.back_to_perfil(self.cliente, self.info_usuario, self.login_view, self.criar_partida_view)) 
+        else:
+            self.mensagem = msg
+        
