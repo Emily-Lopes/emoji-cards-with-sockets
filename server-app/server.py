@@ -69,7 +69,7 @@ def handle_client(client_socket):
             set_resposta_usuario(int(id_partida), username, resposta)
 
         if request.startswith('escolha_baralho'):
-            _, username, id_partida, baralho = request.split(',', 3)
+            _, username, id_partida = request.split(',')
             resposta = 'preparado'
             set_resposta_usuario(int(id_partida), username, resposta)
 

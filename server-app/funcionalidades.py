@@ -299,6 +299,7 @@ def iniciar_partida(id_partida, username_dono, username2, username3):
         confirmacao_usuarios = get_confirmacao_resposta(info_partida, usernames, resposta_esperada)
 
         if confirmacao_usuarios:
+            print(confirmacao_usuarios)
             break
 
         fim = time.time()

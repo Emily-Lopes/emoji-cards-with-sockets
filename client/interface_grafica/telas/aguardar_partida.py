@@ -3,20 +3,17 @@ import arcade.gui # submódulo gui do arcade, que fornece componentes para criar
 
 from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR
 
-from ..telas.aguardar_partida import AguardarPartida
-from ..telas.escolher_baralho import EscolherBaralho
-
-
 import threading
 
 # define a classe LoginView que herda de arcade.View. Cada classe View representa uma tela ou seção da aplicação.
-class AguardarJogadores(arcade.View): 
+class AguardarPartida(arcade.View): 
     def __init__(self, cliente, criar_partida_view, back_to_login):
         super().__init__() # chama o construtor da classe base (arcade.View) para garantir que a visão seja corretamente inicializada.
         self.manager = arcade.gui.UIManager() # cria uma instância do gerenciador de interface do usuário, que será usado para gerenciar os elementos gráficos
         self.cliente = cliente
         self.criar_partida_view = criar_partida_view
         self.back_to_login = back_to_login
+        print(self.cliente.baralho_escolhido)
         self.setup() # chama o método setup para configurar a interface gráfica da visão.
 
     # define o método setup, que configura os componentes da interface gráfica.
@@ -27,7 +24,7 @@ class AguardarJogadores(arcade.View):
         
         # campo de texto para mostrar mensagem
         self.username = arcade.gui.UITextArea(
-            text="Aguardando Jogadores ...", width=500, height=40, font_size=20, font_name=AGRANDIR, text_color=AMARELO
+            text="Aguardando Partida ...", width=500, height=40, font_size=20, font_name=AGRANDIR, text_color=AMARELO
         )
         # adiciona o campo de texto ao layout vertical
         vbox.add(self.username)
@@ -42,21 +39,16 @@ class AguardarJogadores(arcade.View):
     # define o método on_update, chamado a cada atualização do quadro, por exemplo atualiza algum atributo.
     def on_update(self, delta_time: float):
         if self.cliente.mensagem_servidor:
-            if self.cliente.mensagem_servidor.startswith("partida_criada"):
+            if self.cliente.mensagem_servidor.startswith("atributo_turno"):
                 
-                #pega a mensagem e libera a variável compartilhada
-                _, id_partida, baralhos = self.cliente.mensagem_servidor.split(',', 2)
+                _, atributo, id_partida = self.cliente.mensagem_servidor.split(',')
+                
                 self.cliente.mensagem_servidor = None
                 
-                baralhos = self.cliente.manipular_baralhos(baralhos)
-                if len(baralhos)>0:
-                    self.window.show_view(EscolherBaralho(self.cliente, baralhos,id_partida, self.criar_partida_view, self.back_to_login)) 
-                else:
-                    #escolher um baralho aleatorio
-                    self.cliente.baralho_escolhido = self.cliente.gerar_baralho_aleatorio()
-                    self.cliente.responder_baralho_escolhido(id_partida)
-                    self.window.show_view(AguardarPartida(self.cliente, self.criar_partida_view, self.back_to_login)) 
-            
+                print(atributo)
+                
+                
+
     # define o método on_show_view, chamado quando a visão é exibida.
     def on_show_view(self):
         # define a cor de fundo da janela.

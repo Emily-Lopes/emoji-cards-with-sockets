@@ -44,7 +44,7 @@ class ListenServer(ManipularSocket):
             self.mensagem_servidor = request
         
         elif request.startswith('partida_criada'):
-            #_, id_partida, baralhos = request.split(',', 2)
+            # _, id_partida, baralhos = request.split(',', 2)
             self.mensagem_servidor = request
             
         #tem que voltar e olhar resposta
@@ -78,9 +78,9 @@ class ListenServer(ManipularSocket):
         self.fechar_conexao(server_socket)
 
     
-    def responder_partida_criada(self, id_partida, baralho):
+    def responder_baralho_escolhido(self, id_partida):
         server_socket = self.criar_conexao()
-        request = f'escolha_baralho,{self.username},{id_partida},{baralho}'
+        request = f'escolha_baralho,{self.username},{id_partida}'
         self.enviar_dados(server_socket, request)
         self.fechar_conexao(server_socket)
 

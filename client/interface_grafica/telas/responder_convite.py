@@ -11,14 +11,20 @@ import threading
 
 # define a classe LoginView que herda de arcade.View. Cada classe View representa uma tela ou seção da aplicação.
 class ResponderConvite(arcade.View): 
-    def __init__(self, cliente, username_dono, id_partida):
+    def __init__(self, cliente, username_dono, id_partida,criar_partida_view, back_to_login):
         super().__init__() # chama o construtor da classe base (arcade.View) para garantir que a visão seja corretamente inicializada.
         self.manager = arcade.gui.UIManager() # cria uma instância do gerenciador de interface do usuário, que será usado para gerenciar os elementos gráficos
         self.logo = arcade.load_texture(f"interface_grafica/resources/widgets/logo.png")
+        
         self.cliente = cliente
         self.username_dono = username_dono
-        self.resposta = None
         self.id_partida = id_partida   
+        
+        self.criar_partida_view = criar_partida_view
+        self.back_to_login = back_to_login
+        
+        self.resposta = None
+        
         self.setup() # chama o método setup para configurar a interface gráfica da visão.
 
     # define o método setup, que configura os componentes da interface gráfica.
@@ -94,11 +100,12 @@ class ResponderConvite(arcade.View):
         if self.resposta:
             if self.resposta == "aceito":
                 self.resposta = None
-                self.window.show_view(AguardarJogadores(self.cliente))
+                self.window.show_view(AguardarJogadores(self.cliente, self.criar_partida_view, self.back_to_login))
                 
             else:
+                #se recusou: volta pra criar partida
                 self.resposta = None
-                self.window.show_view(Perfil(self.cliente)) 
+                self.window.show_view(self.criar_partida_view(self.cliente, self.back_to_login)) 
                      
 
     # define o método on_show_view, chamado quando a visão é exibida.

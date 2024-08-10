@@ -139,7 +139,7 @@ class CriarPartida(arcade.View):
     def on_update(self, delta_time: float):
         if self.resposta:
             if self.resposta == "Inicia Criacao Partida":
-                self.window.show_view(AguardarJogadores(self.cliente))
+                self.window.show_view(AguardarJogadores(self.cliente, CriarPartida, self.back_to_login))
             else:
                 self.msg.text = self.resposta
                 self.resposta = None
@@ -147,7 +147,7 @@ class CriarPartida(arcade.View):
         if self.cliente.mensagem_servidor:
             if self.cliente.mensagem_servidor.startswith("convite"):
                 _,username_dono,id_partida = self.cliente.mensagem_servidor.split(',')
-                self.window.show_view(ResponderConvite(self.cliente,username_dono,id_partida))
+                self.window.show_view(ResponderConvite(self.cliente,username_dono,id_partida, CriarPartida, self.back_to_login))
                 
             self.msg.text = self.cliente.mensagem_servidor
             self.resposta = None
@@ -164,6 +164,7 @@ class CriarPartida(arcade.View):
     # ações a serem executadas quando a janela é fechada
     def on_close(self):
         self.cliente.logout()
+
 
     def perfil(self):
     #     threading.Thread(target=self.comunicar_info_perfil).start()

@@ -1,5 +1,6 @@
 import threading
 from collections import Counter
+import random
 import json
 from listenServer import ListenServer
 import ast
@@ -7,7 +8,8 @@ import ast
 class Client(ListenServer):
     def __init__(self, server_ip="127.0.0.1", server_porta=5000):
         super().__init__(server_ip, server_porta)
-        #self.username = None
+        self.colecao = None
+        self.baralho_escolhido = None
 
     def get_username(self):
         return self.username
@@ -23,7 +25,7 @@ class Client(ListenServer):
         return True, "Baralho OK!"
     
 
-    def __manipular_baralhos(self, baralhos):
+    def manipular_baralhos(self, baralhos):
         lista_baralho = []
         if baralhos == '':
             return lista_baralho
@@ -114,7 +116,7 @@ class Client(ListenServer):
                 return False, response
             qtd_baralhos = int(response.get('qtd_baralhos'))
             colecao_cartas = response.get('colecao_cartas').split(',')
-            baralhos = self.__manipular_baralhos(response.get('baralhos'))
+            baralhos = self.manipular_baralhos(response.get('baralhos'))
             perfil = {
                 'colecao_cartas': colecao_cartas,
                 'baralhos': baralhos,
@@ -163,7 +165,7 @@ class Client(ListenServer):
             perfil = ast.literal_eval(perfil)
             qtd_baralhos = int(perfil.get('qtd_baralhos'))
             colecao_cartas = perfil.get('colecao_cartas').split(',')
-            baralhos = self.__manipular_baralhos(perfil.get('baralhos'))
+            baralhos = self.manipular_baralhos(perfil.get('baralhos'))
             perfil = {
                 'colecao_cartas': colecao_cartas,
                 'baralhos': baralhos,
@@ -208,7 +210,7 @@ class Client(ListenServer):
             self.enviar_dados(client, request)
             response = self.receber_dados(client)
             if response not in ("Usuário ainda não tem baralhos", "Usuário não encontrado."):
-                baralhos = self.__manipular_baralhos(response)
+                baralhos = self.manipular_baralhos(response)
                 return True, baralhos
             return False, response
         except Exception as e:
@@ -235,3 +237,20 @@ class Client(ListenServer):
             if client:
                 self.fechar_conexao(client)
 
+
+    def gerar_baralho_aleatorio(self):
+        s, info_usuario = self.exibir_perfil()
+        colecao = info_usuario['colecao_cartas']
+        contador = Counter()
+        resultado = []
+        total=9
+        max_repeticoes=3
+        
+        while len(resultado) < total:
+            emocao = random.choice(colecao)
+            
+            if contador[emocao] < max_repeticoes:
+                resultado.append(emocao)
+                contador[emocao] += 1
+        
+        return resultado
