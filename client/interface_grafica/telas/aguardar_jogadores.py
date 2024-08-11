@@ -12,11 +12,15 @@ import threading
 # define a classe LoginView que herda de arcade.View. Cada classe View representa uma tela ou seção da aplicação.
 class AguardarJogadores(arcade.View): 
     def __init__(self, cliente, criar_partida_view, back_to_login):
+        
         super().__init__() # chama o construtor da classe base (arcade.View) para garantir que a visão seja corretamente inicializada.
+        
         self.manager = arcade.gui.UIManager() # cria uma instância do gerenciador de interface do usuário, que será usado para gerenciar os elementos gráficos
+        
         self.cliente = cliente
         self.criar_partida_view = criar_partida_view
         self.back_to_login = back_to_login
+        
         self.setup() # chama o método setup para configurar a interface gráfica da visão.
 
     # define o método setup, que configura os componentes da interface gráfica.

@@ -121,7 +121,7 @@ class Login(arcade.View):
                                  font_size=botao['font_size'], font_name=botao['font_name'], anchor_x="center")
 
         arcade.draw_text("username", 770, 395,
-                         arcade.color.WHITE, font_size=15, font_name=AGRANDIR, anchor_x="center")
+                         arcade.color.WHITE, font_size=15, font_name=POPPINS, anchor_x="center")
         arcade.draw_text("senha", 770, 295,
                          arcade.color.WHITE, font_size=15, font_name=POPPINS, anchor_x="center")
 
