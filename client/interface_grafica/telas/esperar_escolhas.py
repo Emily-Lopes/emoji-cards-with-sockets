@@ -5,6 +5,7 @@ from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POP
 
 import threading
 from ..telas.vencedor_turno import VencedorTurno
+from ..telas.vencedor_partida import VencedorPartida
 
 class EsperarEscolhas(arcade.View):
     def __init__(self, cliente, atributo_turno, pontuacao, id_partida, criar_partida_view, back_to_login, novo_turno):
@@ -107,7 +108,17 @@ class EsperarEscolhas(arcade.View):
                 escolhas = eval(escolhas_cada_jogador)
                 pontuacao = eval(pontuacao)
                 
-                self.window.show_view(VencedorTurno(self.cliente, self.atributo, vencedor, escolhas, pontuacao, id_partida, novo_atributo, self.criar_partida_view, self.back_to_login, self.novo_turno)) 
+                self.window.show_view(VencedorTurno(self.cliente, self.atributo, vencedor, escolhas, pontuacao, id_partida, novo_atributo, self.criar_partida_view, self.back_to_login, self.novo_turno))
+            
+            elif self.cliente.mensagem_servidor.startswith("fim_partida"):    
+                #pega a mensagem e libera a variável compartilhada
+
+                _, vencedor, carta_adicionada, pontuacao = self.cliente.mensagem_servidor.split(',',3)
+                self.cliente.mensagem_servidor = None
+
+                pontuacao = eval(pontuacao)
+                
+                self.window.show_view(VencedorPartida(self.cliente, vencedor, carta_adicionada, pontuacao, self.criar_partida_view, self.back_to_login)) 
 
                 
                 

@@ -441,9 +441,9 @@ def determinar_ganhador_partida(id_partida, usernames):
         except Exception as e:
             return f"Erro ao adicionar carta no banco de dados: {e}"
 
-        mensagem = f'fim_partida,{vencedor},{carta_adicionada}'
+        mensagem = f"fim_partida,{vencedor},{carta_adicionada},{partidas[id_partida]['pontuacao']}"
     else:
-        mensagem = 'fim_partida_empate,empate,none'
+        mensagem = f"fim_partida,empate,empate,{partidas[id_partida]['pontuacao']}"
     
     finalizar_partida(id_partida, usernames)
 

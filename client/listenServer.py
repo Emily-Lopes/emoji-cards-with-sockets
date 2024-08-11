@@ -58,7 +58,7 @@ class ListenServer(ManipularSocket):
             self.mensagem_servidor = request
     
         elif request.startswith('fim_partida'):
-           # _, vencedor, carta_adicionada = request.split(',')
+           # _, vencedor, carta_adicionada, pontuacao = request.split(',',3)
             self.mensagem_servidor = request
         
         elif request.startswith('fim_partida_empate'):
