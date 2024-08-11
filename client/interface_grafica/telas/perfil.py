@@ -133,8 +133,8 @@ class Perfil(arcade.View):
             'texture': self.b_jogar,
             'x': LARGURA_TELA // 2,
             'y': 46,
-            'width': 150,
-            'height': 50,
+            'width': 200,
+            'height': 70,
             'action': self.tela_criar_partida 
         })
 
@@ -155,7 +155,7 @@ class Perfil(arcade.View):
         #auxiliar:
         vbox = arcade.gui.UIBoxLayout()
         self.msg = arcade.gui.UITextArea(
-            text="", width=450, height=40, font_size=10, font_name=POPPINS, text_color=arcade.color.RED
+            text="", width=450, height=40, font_size=12, font_name=POPPINS, text_color=arcade.color.RED
         )
         vbox.add(self.msg)
         
@@ -173,6 +173,10 @@ class Perfil(arcade.View):
     def on_hide_view(self):
         # desativa o gerenciador de interface, tornando os widgets não interativos.
         self.gerencia_entrada.disable()
+    
+    # ações a serem executadas quando a janela é fechada
+    def on_close(self):
+        self.cliente.logout()
     
     # define o método on_update, chamado a cada atualização do quadro, por exemplo atualiza algum atributo.
     def on_update(self, delta_time: float):
@@ -193,8 +197,8 @@ class Perfil(arcade.View):
         arcade.draw_text(f"Você possui {len(self.colecao)} cartas =)", 945, 545, AMARELO, font_size=8, font_name=POPPINS, anchor_x="right")
 
         espacamento = 160
-        largura_carta = 180
-        altura_carta = 200
+        largura_carta = 125
+        altura_carta = 180
         cartas_visiveis = 5
 
         for i in range(cartas_visiveis):
@@ -220,8 +224,8 @@ class Perfil(arcade.View):
             arcade.draw_texture_rectangle(179, 180, 300, 180, self.fundo_b1)
             
             espacamento = 116
-            largura_carta = 150
-            altura_carta = 165
+            largura_carta = 100
+            altura_carta = 145
             cartas_visiveis_baralhos = 2
 
             for i in range(cartas_visiveis_baralhos):
@@ -242,8 +246,8 @@ class Perfil(arcade.View):
             arcade.draw_texture_rectangle(499, 180, 300, 180, self.fundo_b2)
             
             espacamento = 116
-            largura_carta = 150
-            altura_carta = 165
+            largura_carta = 100
+            altura_carta = 145
             cartas_visiveis_baralhos = 2
 
             for i in range(cartas_visiveis_baralhos):
@@ -264,8 +268,8 @@ class Perfil(arcade.View):
             arcade.draw_texture_rectangle(825, 180, 300, 180, self.fundo_b3)
             
             espacamento = 116
-            largura_carta = 150
-            altura_carta = 165
+            largura_carta = 100
+            altura_carta = 145
             cartas_visiveis_baralhos = 2
 
             for i in range(cartas_visiveis_baralhos):
