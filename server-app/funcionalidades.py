@@ -66,6 +66,9 @@ def login(username, senha, client_ip, client_port):
                     response = bd_client.recv(1024).decode('utf-8')
         
                     response = f"{client_port},Login feito com sucesso!"
+            
+            else:
+                response = f"-,{response}"
 
         print("usuarios online:",online_users)
         return response
