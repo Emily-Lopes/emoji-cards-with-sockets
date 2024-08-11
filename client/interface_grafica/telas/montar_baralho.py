@@ -62,10 +62,20 @@ class MontarBaralho(arcade.View):
         self.setup()
 
     def setup(self):
+        self.b_perfil = arcade.load_texture("interface_grafica/resources/widgets/botoes/b-perfil.png")
+        self.botoes.append({
+            'texture': self.b_perfil,
+            'x': 970,
+            'y': 570,
+            'width': 35,
+            'height': 35,
+            'action': self.perfil
+        })
+                
         #auxiliar:
         vbox = arcade.gui.UIBoxLayout()
         self.msg = arcade.gui.UITextArea(
-            text="", width=450, height=40, font_size=12, font_name=POPPINS, text_color=arcade.color.RED
+            text="", height=40, font_size=12, font_name=POPPINS, text_color=arcade.color.RED
         )
         vbox.add(self.msg)
         
@@ -86,14 +96,17 @@ class MontarBaralho(arcade.View):
 
     def on_draw(self):
         arcade.start_render()  
+        
+        arcade.draw_text(self.cliente.get_username(), 950, 560,
+                    AMARELO, font_size=12, font_name=POPPINS,  anchor_x="right")
 
         # Carrossel da Coleção    
-        arcade.draw_text("Coleção", 110, 560, AMARELO, font_size=24, font_name=AGRANDIR, anchor_x="center")
+        arcade.draw_text("Coleção", 30, 555, AMARELO, font_size=20, font_name=POPPINS, anchor_x="left")
         arcade.draw_texture_rectangle(LARGURA_TELA // 2, 395, 950, 308, self.fundo_colecao)
 
         espacamento = 205
-        largura_carta = 280
-        altura_carta = 300
+        largura_carta = 180
+        altura_carta = 270
         cartas_visiveis = 4
 
         for i in range(cartas_visiveis):
@@ -108,7 +121,7 @@ class MontarBaralho(arcade.View):
         arcade.draw_texture_rectangle(LARGURA_TELA - 70, 400, 50, 50, self.seta_direita)
 
         # Carrossel do Baralho
-        arcade.draw_text("Escolhas", 110, 210, AMARELO, font_size=24, font_name=AGRANDIR, anchor_x="center")
+        arcade.draw_text("Escolhas", 30, 210, AMARELO, font_size=20, font_name=POPPINS, anchor_x="left")
         arcade.draw_texture_rectangle(LARGURA_TELA // 2, 145, 950, 120, self.fundo_baralho)
 
         espacamento_baralho = 100
@@ -142,40 +155,42 @@ class MontarBaralho(arcade.View):
 
         elif LARGURA_TELA - 70 - 25 < x < LARGURA_TELA - 70 + 25 and 400 - 25 < y < 400 + 25:
             self.indice_inicial = (self.indice_inicial + 1) % len(self.cartas)
+        
+        #se nao foi nas setas, olhas se foi nas cartas
+        else:
+            espacamento = 205
+            largura_carta = 280
+            altura_carta = 300
+            cartas_visiveis = 4
 
-        espacamento = 205
-        largura_carta = 280
-        altura_carta = 300
-        cartas_visiveis = 4
+            for i in range(cartas_visiveis):
+                pos_x = 200 + i * espacamento
+                pos_y = 396
 
-        for i in range(cartas_visiveis):
-            pos_x = 200 + i * espacamento
-            pos_y = 396
+                if pos_x - largura_carta // 2 < x < pos_x + largura_carta // 2 and pos_y - altura_carta // 2 < y < pos_y + altura_carta // 2:
+                    indice_carta = (self.indice_inicial + i) % len(self.cartas)
+                    carta_selecionada = self.cartas[indice_carta]
+                    emoji_correspondente = self.mapeamento_cartas[carta_selecionada]
 
-            if pos_x - largura_carta // 2 < x < pos_x + largura_carta // 2 and pos_y - altura_carta // 2 < y < pos_y + altura_carta // 2:
-                indice_carta = (self.indice_inicial + i) % len(self.cartas)
-                carta_selecionada = self.cartas[indice_carta]
-                emoji_correspondente = self.mapeamento_cartas[carta_selecionada]
+                    if len(self.baralho) < 9: 
+                        self.baralho.append(emoji_correspondente)
+                        self.escolhas.append(emoji_correspondente['nome'])
+                    
+                    else:
+                        self.mensagem = "Você já escolheu 9 cartas!"
 
-                if len(self.baralho) < 9: 
-                    self.baralho.append(emoji_correspondente)
-                    self.escolhas.append(emoji_correspondente['nome'])
-                
-                else:
-                    self.mensagem = "Você já escolheu 9 cartas!"
+            espacamento_baralho = 100
+            largura_carta_baralho = 60
+            altura_carta_baralho = 60
+            for i, carta in enumerate(self.baralho):
+                pos_x = 90 + i * espacamento_baralho
+                pos_y = 145
 
-        espacamento_baralho = 100
-        largura_carta_baralho = 60
-        altura_carta_baralho = 60
-        for i, carta in enumerate(self.baralho):
-            pos_x = 90 + i * espacamento_baralho
-            pos_y = 145
-
-            if (pos_x - largura_carta_baralho / 2 < x < pos_x + largura_carta_baralho / 2 and
-                    pos_y - altura_carta_baralho / 2 < y < pos_y + altura_carta_baralho / 2):
-                self.baralho.pop(i)
-                self.escolhas.pop(i)
-                break
+                if (pos_x - largura_carta_baralho / 2 < x < pos_x + largura_carta_baralho / 2 and
+                        pos_y - altura_carta_baralho / 2 < y < pos_y + altura_carta_baralho / 2):
+                    self.baralho.pop(i)
+                    self.escolhas.pop(i)
+                    break
 
         self.on_draw()
 
@@ -184,6 +199,10 @@ class MontarBaralho(arcade.View):
         if self.mensagem:
             self.msg.text = self.mensagem
             self.mensagem = None
+    
+    def perfil(self):
+        #voltar pro perfil
+        self.window.show_view(self.back_to_perfil(self.cliente, self.info_usuario, self.login_view, self.criar_partida_view)) 
         
     def salvar_baralho(self):
         s, msg = self.cliente.adicionar_baralho(self.escolhas)

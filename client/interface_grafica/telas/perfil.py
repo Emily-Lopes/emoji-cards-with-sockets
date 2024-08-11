@@ -155,7 +155,7 @@ class Perfil(arcade.View):
         #auxiliar:
         vbox = arcade.gui.UIBoxLayout()
         self.msg = arcade.gui.UITextArea(
-            text="", width=450, height=40, font_size=12, font_name=POPPINS, text_color=arcade.color.RED
+            text="", height=40, font_size=12, font_name=POPPINS, text_color=arcade.color.RED
         )
         vbox.add(self.msg)
         
@@ -193,7 +193,7 @@ class Perfil(arcade.View):
         # Carrossel da Coleção
         arcade.draw_texture_rectangle(LARGURA_TELA // 2, 430, 950, 220, self.fundo_colecao)
         
-        arcade.draw_text(f"Coleção", 30, 550, AMARELO, font_size=20, font_name=POPPINS, anchor_x="left")
+        arcade.draw_text(f"Coleção", 30, 555, AMARELO, font_size=20, font_name=POPPINS, anchor_x="left")
         arcade.draw_text(f"Você possui {len(self.colecao)} cartas =)", 945, 545, AMARELO, font_size=8, font_name=POPPINS, anchor_x="right")
 
         espacamento = 160
