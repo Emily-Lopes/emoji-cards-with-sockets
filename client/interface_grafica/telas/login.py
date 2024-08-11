@@ -23,7 +23,7 @@ class Login(arcade.View):
 
         #atributos comunicacao:
         self.cliente = cliente
-        self.resposta = None
+        self.mensagem = None
         
         self.setup() # chama o método setup para configurar a interface gráfica da visão.
 
@@ -73,7 +73,7 @@ class Login(arcade.View):
             'x': 770,
             'y': 180,
             'width': 200,
-            'height': 75,
+            'height': 70,
             'action': self.login
         })
         self.botoes.append({
@@ -147,12 +147,12 @@ class Login(arcade.View):
        
     # define o método on_update, chamado a cada atualização do quadro, por exemplo atualiza algum atributo.
     def on_update(self, delta_time: float):
-        if self.resposta:
-            if self.resposta == 'Login feito com sucesso!' or self.resposta == 'Usuário adicionado com sucesso!':
+        if self.mensagem:
+            if self.mensagem == 'Login feito com sucesso!' or self.mensagem == 'Usuário adicionado com sucesso!':
                 self.window.show_view(CriarPartida(self.cliente, Login))
-            else:
-                self.msg.text = self.resposta
-                self.resposta = None
+            
+            self.msg.text = self.mensagem
+            self.mensagem = None
         
     def on_show_view(self):
         # habilita o gerenciador de interface, tornando os widgets interativos.
@@ -167,28 +167,28 @@ class Login(arcade.View):
         try:
             threading.Thread(target=self.comunicar_confirmar_login).start()
         except Exception as e:
-            self.resposta = f"Ocorreu um erro: {str(e)}"
+            self.mensagem = f"Ocorreu um erro: {str(e)}"
 
     def comunicar_confirmar_login(self):
         username = self.campo_nome.text
         password = self.campo_senha.text       
         if username != "" and password != "":
             s, msg = self.cliente.login(username, password)
-            self.resposta = msg
+            self.mensagem = msg
         else:
-            self.resposta = "Preencha Todos os Campos!"
+            self.mensagem = "Preencha Todos os Campos!"
     
     def criar_conta(self):
         try:
             threading.Thread(target=self.comunicar_criar_conta).start()
         except Exception as e:
-            self.resposta = f"Ocorreu um erro: {str(e)}"
+            self.mensagem = f"Ocorreu um erro: {str(e)}"
 
     def comunicar_criar_conta(self):
         username = self.campo_nome.text
         senha = self.campo_senha.text       
         if username != "" and senha != "":
             s, msg = self.cliente.criar_conta(username, senha)
-            self.resposta = msg
+            self.mensagem = msg
         else:
-            self.resposta = "Preencha Todos os Campos!"
+            self.mensagem = "Preencha Todos os Campos!"

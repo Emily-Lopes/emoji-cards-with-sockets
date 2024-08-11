@@ -25,7 +25,7 @@ class CriarPartida(arcade.View):
         
         #atributos comunicacao:
         self.cliente = cliente
-        self.resposta = None
+        self.mensagem = None
         
         self.setup() # chama o método setup para configurar a interface gráfica da visão.
 
@@ -74,8 +74,8 @@ class CriarPartida(arcade.View):
             'texture': self.b_partida,
             'x': LARGURA_TELA//2,
             'y': 200,
-            'width': 210,
-            'height': 80,
+            'width': 290,
+            'height': 70,
             'action': self.criar_partida
         })
         self.botoes.append({
@@ -90,7 +90,7 @@ class CriarPartida(arcade.View):
         #auxiliar:
         vbox = arcade.gui.UIBoxLayout()
         self.msg = arcade.gui.UITextArea(
-            text="", width=450, height=40, font_size=10, font_name=POPPINS, text_color=arcade.color.RED
+            text="", height=40, font_size=12, font_name=POPPINS, text_color=arcade.color.RED
         )
         vbox.add(self.msg)
         
@@ -132,17 +132,14 @@ class CriarPartida(arcade.View):
                         botao['y'] - botao['height'] / 2 < y < botao['y'] + botao['height'] / 2):
                     botao['action']()
                     break
-        
-            # define o método on_hide_view, chamado quando a visão é escondida. Desativa o gerenciador de interface.
-   
-    # define o método on_update, chamado a cada atualização do quadro, por exemplo atualiza algum atributo.
+           
     def on_update(self, delta_time: float):
-        if self.resposta:
-            if self.resposta == "Inicia Criacao Partida":
+        if self.mensagem:
+            if self.mensagem == "Inicia Criacao Partida":
                 self.window.show_view(AguardarJogadores(self.cliente, CriarPartida, self.back_to_login))
-            else:
-                self.msg.text = self.resposta
-                self.resposta = None
+            
+            self.msg.text = self.mensagem
+            self.mensagem = None
         
         if self.cliente.mensagem_servidor:
             if self.cliente.mensagem_servidor.startswith("convite"):
@@ -150,7 +147,7 @@ class CriarPartida(arcade.View):
                 self.window.show_view(ResponderConvite(self.cliente,username_dono,id_partida, CriarPartida, self.back_to_login))
                 
             self.msg.text = self.cliente.mensagem_servidor
-            self.resposta = None
+            self.mensagem = None
                     
     def on_show_view(self):
         # habilita o gerenciador de interface, tornando os widgets interativos.
@@ -160,11 +157,9 @@ class CriarPartida(arcade.View):
         # desativa o gerenciador de interface, tornando os widgets não interativos.
         self.gerencia_entrada.disable()        
     
-    
     # ações a serem executadas quando a janela é fechada
     def on_close(self):
         self.cliente.logout()
-
 
     def perfil(self):
     #     threading.Thread(target=self.comunicar_info_perfil).start()
@@ -182,7 +177,7 @@ class CriarPartida(arcade.View):
             self.window.show_view(Perfil(self.cliente, info_perfil, self.back_to_login, CriarPartida)) 
         else:
             #ocorreu algum erro
-            self.resposta = msg
+            self.mensagem = msg
             
     def criar_partida(self):
         threading.Thread(target=self.comunicar_criar_partida).start()
@@ -191,7 +186,7 @@ class CriarPartida(arcade.View):
         username1 = self.campo_jogador1.text
         username2 = self.campo_jogador2.text      
         if username1 != "" and username2 != "":
-            self.resposta = "Inicia Criacao Partida"
+            self.mensagem = "Inicia Criacao Partida"
             self.cliente.criar_partida(username1, username2)
         else:
-            self.resposta = "Preencha os Campos!"
+            self.mensagem = "Preencha Todos os Campos!"
