@@ -47,15 +47,15 @@ class Client(ListenServer):
             self.enviar_dados(client, request)
             response = self.receber_dados(client)
             if response == "Usuário adicionado com sucesso!":
+                self.login(username,senha) #já faz o login do usuário
                 return True, response
             return False, response
         except Exception as e:
             print(f"Erro ao criar conta: {str(e)}")
-            return False, f"Erro ao criar conta: {str(e)}"
+            return False, f"Erro ao criar conta: Servidor Indisponível - Reinicie o Sistema!"
         finally:
             if client:
                 self.fechar_conexao(client)
-
 
     def login(self, username, senha):
         try:
@@ -77,7 +77,7 @@ class Client(ListenServer):
         except Exception as e:
             self.fechar_conexao(client)
             print(f"Erro ao realizar login:{str(e)}")
-            return False, f"Erro ao realizar login:{str(e)}"
+            return False, f"Erro ao realizar login: Servidor Indisponível - Reinicie o Sistema!"
 
 
     def logout(self):
