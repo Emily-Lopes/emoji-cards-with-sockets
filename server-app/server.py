@@ -4,10 +4,10 @@ import threading
 import json
 
 def handle_client(client_socket):
-    # try:
-        request = client_socket.recv(1024).decode('utf-8')
-        print(f"received request: {request}")
+    request = client_socket.recv(1024).decode('utf-8')
+    print(f"requisicao recebida pelo servidor de app: {request}")
 
+    try:
         if request.startswith('criar_conta'):
             _, username, senha = request.split(',')
             confirmation = criar_conta(username, senha)
@@ -62,7 +62,7 @@ def handle_client(client_socket):
         if request.startswith('criar_partida'):
             _, username_dono, username2, username3 = request.split(',')
             confirmation = criar_partida(username_dono, username2, username3)
-            client_socket.send(confirmation.encode('utf-8'))
+            # client_socket.send(confirmation.encode('utf-8')) # a criar partida retorna a resposta pelo canal aberto com o cliente
 
         if request.startswith('resposta_convite'):
             _, username, id_partida, resposta = request.split(',')
@@ -79,18 +79,24 @@ def handle_client(client_socket):
             set_resposta_usuario(int(id_partida), username, resposta)
             cartas_jogadas_turno(int(id_partida), username, emocao)
             
-    # except Exception as e:
-    #     print(f"error handling client: {e}")
-    # finally:
+    except Exception as e:
+        confirmation = f"erro ao lidar com requisicao {request}: {str(e)}"
+        print(confirmation)
+        client_socket.send(confirmation.encode('utf-8'))
+    finally:
         client_socket.close()
 
-
-# SERVIDOR DE APLICAÇÃO
 def start_server():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind(("0.0.0.0", 5000))
-    server.listen()
-    print("servidor ouvindo na porta 5000...")
+
+    try:
+        server.bind(("0.0.0.0", 5000))
+        server.listen()
+        print("servidor de aplicação ouvindo na porta 5000...")
+    except socket.error as e:
+        print(f"erro ao inicializar o servidor de aplicacao: {str(e)}")
+        return
+    
 
     while True:
         client_socket, addr = server.accept()

@@ -12,7 +12,7 @@ import interface #arquivo interface.py vai funcionar como uma biblioteca
 # função para lidar com as requisições dos clientes
 def handle_client(client_socket):
     request = client_socket.recv(1024).decode('utf-8')  # convert bytes to string
-    print(f"Received request: {request}")
+    print(f"requisicao recebida pelo db: {request}")
 
     if request.startswith('cartas_disponiveis'):
         try:
@@ -145,7 +145,7 @@ def handle_client(client_socket):
         response = f"erro: mensagem não foi combinada"
         client_socket.send(response.encode('utf-8')) # convert string to bytes
     
-    print(f"Response: {response}")
+    print(f"resposta db: {response}")
     
     #finaliza thread
     client_socket.close()
@@ -156,15 +156,18 @@ usando um loop infinito na thread principal para aceitar conexões e,
 em seguida, cria uma nova thread para lidar com cada conexão do cliente. 
 '''
 def start_db_server():
-    server_ip = '0.0.0.0'
-    server_port = 6000
 
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind((server_ip, server_port))
     
-    print(f"db-Server ouvindo na porta {server_port}")
-    
-    server.listen() 
+    try:
+        server_ip = '0.0.0.0'
+        server_port = 6000
+        server.bind((server_ip, server_port))
+        server.listen(10)
+        print("servidor de banco de dados ouvindo na porta 6000...")
+    except socket.error as e:
+        print(f"erro ao inicializar o servidor de aplicacao: {str(e)}")
+        return
     
     while True:
         client_socket, addr = server.accept()
@@ -174,7 +177,7 @@ def start_db_server():
         client_handler.start()
 
 def main():
-    interface.iniciar_banco_dados()
+    interface.iniciar_banco_dados() #se não existe banco de dados, cria as tabelas e adiciona as 24 cartas disponíveis
     start_db_server()
 
 if __name__ == "__main__":

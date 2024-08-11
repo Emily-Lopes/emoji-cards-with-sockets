@@ -17,7 +17,7 @@ class ListenServer(ManipularSocket):
             server.bind(('0.0.0.0', int(client_port)))
             server.listen(1)
 
-            print(f"Cliente escutando em {client_ip}:{client_port}\n")
+            print(f"cliente escutando em {client_ip}:{client_port}\n")
 
             while True:
                 try:
@@ -30,15 +30,16 @@ class ListenServer(ManipularSocket):
                         
                     
                 except Exception as e:
-                    print(f"Erro ao ouvir mensagem de convite: \n{e}")
+                    print(f"Erro ao ouvir mensagem do servidor: \n{e}")
         except Exception as e:
-                    print(f"Erro ao tentar escutar servidor {client_ip}:{client_port} \n{e}")
+                    print(f"Erro ao tentar criar conexão disponível ao servidor {client_ip}:{client_port} \n{e}")
     
 
     def __manipular_mensagem(self, request):
         #t = random.choice(range(1,6))
         #sleep(t)
         #print(f'{request}')
+        print(f"mensagem recebida do servidor: {request}")
         if request.startswith('convite_partida'):
             #_, username_dono, id_partida = request.split(',')
             self.mensagem_servidor = request
@@ -68,7 +69,6 @@ class ListenServer(ManipularSocket):
         elif request.startswith('Erro ao gerenciar a partida'):
             self.mensagem_servidor = request
             
-
 
     def responder_convite(self, resposta, id_partida): 
         server_socket =  self.criar_conexao()

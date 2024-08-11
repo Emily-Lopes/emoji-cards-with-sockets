@@ -50,8 +50,8 @@ class Client(ListenServer):
                 return True, response
             return False, response
         except Exception as e:
-            print(f"Erro ao criar conta: {e}")
-            return False, None
+            print(f"Erro ao criar conta: {str(e)}")
+            return False, f"Erro ao criar conta: {str(e)}"
         finally:
             if client:
                 self.fechar_conexao(client)
@@ -69,7 +69,6 @@ class Client(ListenServer):
                 client_ip, client_port = client.getsockname()
                 client_port = port
                 client.close()
-                #self.fechar_conexao(client)                 
                 listen_thread = threading.Thread(target=self.handle_server, args=(client_ip, client_port))
                 listen_thread.daemon = True
                 listen_thread.start()
@@ -77,8 +76,8 @@ class Client(ListenServer):
             return False, response
         except Exception as e:
             self.fechar_conexao(client)
-            print(f"Erro ao realizar login:\n{e}")
-            return False, None
+            print(f"Erro ao realizar login:{str(e)}")
+            return False, f"Erro ao realizar login:{str(e)}"
 
 
     def logout(self):
@@ -92,8 +91,8 @@ class Client(ListenServer):
             return False, response
         
         except Exception as e:
-            print(f"Erro  ao realizar logout:\n{e}")
-            return False, None
+            print(f"Erro  ao realizar logout:{str(e)}")
+            return False, f"Erro  ao realizar logout:{str(e)}"
         finally:
             if client:
                 self.fechar_conexao(client)
@@ -124,8 +123,8 @@ class Client(ListenServer):
             }
             return True, perfil
         except Exception as e:
-            print(f"Erro  ao exibir o perfil do usuário:\n{e}")
-            return False, None
+            print(f"Erro  ao exibir o perfil do usuário:{str(e)}")
+            return False, f"Erro  ao exibir o perfil do usuário:{str(e)}"
         finally:
             if client:
                 self.fechar_conexao(client)
@@ -177,8 +176,8 @@ class Client(ListenServer):
             return False, resposta
 
         except Exception as e:
-            print(f"Erro  ao excluir baralho: {e}")
-            return False, None
+            print(f"Erro  ao excluir baralho: {str(e)}")
+            return False, f"Erro  ao excluir baralho: {str(e)}"
         finally:
             if client:
                 self.fechar_conexao(client)
@@ -196,8 +195,8 @@ class Client(ListenServer):
                 return True, colecao_cartas
             return False, response
         except Exception as e:
-            print(f"Erro  ao adicionar baralho:\n{e}")
-            return False, None
+            print(f"Erro ao buscar colecao para montar baralho:{str(e)}")
+            return False, f"Erro ao buscar colecao para baralho:{str(e)}"
         finally:
             if client:
                 self.fechar_conexao(client)
@@ -214,8 +213,8 @@ class Client(ListenServer):
                 return True, baralhos
             return False, response
         except Exception as e:
-            print(f"Erro  ao exibir baralhos:\n{e}")
-            return None
+            print(f"Erro  ao exibir baralhos:{e}")
+            return False, f"Erro  ao exibir baralhos:{str(e)}"
         finally:
             if client:
                 self.fechar_conexao(client)
@@ -229,10 +228,10 @@ class Client(ListenServer):
             #response = self.receber_dados(client)
             # if response == "True":
             #     return True
-            # return False
+            return f"Tentando Criar Partida"
         except Exception as e:
-            print(f"Erro ao tentar criar partida:\n{e}")
-            return False
+            print(f"Erro ao tentar criar partida:{str(e)}")
+            return f"Erro ao tentar criar partida:{str(e)}"
         finally:
             if client:
                 self.fechar_conexao(client)

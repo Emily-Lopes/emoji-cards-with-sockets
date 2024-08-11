@@ -14,57 +14,63 @@ partidas = {}
 
 # GERENCIAMENTO DAS REQUISIÇÕES
 def criar_conta(username, senha):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as bd_client:
-        bd_client.connect((db_host, db_port))
-        request = f"verificar_username {username}"
-        bd_client.send(request.encode('utf-8'))
-        response = bd_client.recv(1024).decode('utf-8')
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as bd_client:
+            bd_client.connect((db_host, db_port))
+            request = f"verificar_username {username}"
+            bd_client.send(request.encode('utf-8'))
+            response = bd_client.recv(1024).decode('utf-8')
 
-        if response == 'Username está disponível!':
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as bd_client:
-                bd_client.connect((db_host, db_port))
-                bd_client.send("cartas_disponiveis".encode('utf-8'))
-                cartas_response = bd_client.recv(1024).decode('utf-8')
+            if response == 'Username está disponível!':
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as bd_client:
+                    bd_client.connect((db_host, db_port))
+                    bd_client.send("cartas_disponiveis".encode('utf-8'))
+                    cartas_response = bd_client.recv(1024).decode('utf-8')
 
-            if cartas_response != "Nenhuma Carta Cadastrada":
-                vetor_nome_emocoes = cartas_response.split(',')
+                if cartas_response != "Nenhuma Carta Cadastrada":
+                    vetor_nome_emocoes = cartas_response.split(',')
 
-                if len(vetor_nome_emocoes) >= 9:
-                    cartas_sorteadas = random.sample(vetor_nome_emocoes, 9)
-                    cartas = ','.join(cartas_sorteadas) 
+                    if len(vetor_nome_emocoes) >= 9:
+                        cartas_sorteadas = random.sample(vetor_nome_emocoes, 9)
+                        cartas = ','.join(cartas_sorteadas) 
+                    else:
+                        return "Não há cartas suficientes para criar a conta."
                 else:
-                    return "Não há cartas suficientes para criar a conta."
-            else:
-                return "Nenhuma carta disponível para sortear."
+                    return "Nenhuma carta disponível para sortear."
 
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as bd_client:
-                bd_client.connect((db_host, db_port))
-                request = f"adicionar_usuario {username} {senha} {cartas}"  
-                bd_client.send(request.encode('utf-8'))
-                response = bd_client.recv(1024).decode('utf-8')
-    
-    return response
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as bd_client:
+                    bd_client.connect((db_host, db_port))
+                    request = f"adicionar_usuario {username} {senha} {cartas}"  
+                    bd_client.send(request.encode('utf-8'))
+                    response = bd_client.recv(1024).decode('utf-8')
+        
+        return response
+    except Exception as e:
+        return f"Erro ao tentar criar conta: {str(e)}"
 
 def login(username, senha, client_ip, client_port):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as bd_client:
-        bd_client.connect((db_host, db_port))
-        request = f"verificar_login {username} {senha}"
-        bd_client.send(request.encode('utf-8'))
-        response = bd_client.recv(1024).decode('utf-8')
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as bd_client:
+            bd_client.connect((db_host, db_port))
+            request = f"verificar_login {username} {senha}"
+            bd_client.send(request.encode('utf-8'))
+            response = bd_client.recv(1024).decode('utf-8')
 
-        if response == 'Login Correto!':
-            online_users[username] = {'ip': client_ip, 'porta': client_port}
+            if response == 'Login Correto!':
+                online_users[username] = {'ip': client_ip, 'porta': client_port}
 
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as bd_client:
-                bd_client.connect((db_host, db_port))
-                request = f"set_status {username} online"
-                bd_client.send(request.encode('utf-8'))
-                response = bd_client.recv(1024).decode('utf-8')
-    
-                response = f"{client_port},Login feito com sucesso!"
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as bd_client:
+                    bd_client.connect((db_host, db_port))
+                    request = f"set_status {username} online"
+                    bd_client.send(request.encode('utf-8'))
+                    response = bd_client.recv(1024).decode('utf-8')
+        
+                    response = f"{client_port},Login feito com sucesso!"
 
-    print(online_users)
-    return response
+        print("usuarios online:",online_users)
+        return response
+    except Exception as e:
+        return f"Erro ao tentar fazer login: {str(e)}"
 
 def logout(username):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as bd_client:
@@ -85,7 +91,7 @@ def logout(username):
     
                 response = 'Logout feito com sucesso!'
 
-    print(online_users)
+    print("usuarios online:",online_users)
     return response
 
 def adicionar_baralho(username, baralho):
@@ -172,7 +178,7 @@ def exibir_perfil(username):
         return filtered_data
     
     except Exception as e:
-        return f"erro ao processar a resposta: {str(e)}"
+        return f"Erro ao processar a resposta do banco de dados: {str(e)}"
     
 def montar_baralho(username):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as bd_client:
@@ -439,7 +445,7 @@ def determinar_ganhador_partida(id_partida, usernames):
                     raise Exception("Erro ao adicionar carta no banco de dados")
         
         except Exception as e:
-            return f"Erro ao adicionar carta no banco de dados: {e}"
+            return f"Erro ao adicionar carta no banco de dados: {str(e)}"
 
         mensagem = f"fim_partida,{vencedor},{carta_adicionada},{partidas[id_partida]['pontuacao']}"
     else:
