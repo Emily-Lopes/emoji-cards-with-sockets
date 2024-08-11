@@ -169,5 +169,5 @@ class Turno(arcade.View):
         self.cliente.responder_jogada_turno(emocao, self.id_partida)
         
         #mudar para tela de aguardar
-        self.window.show_view(EsperarEscolhas(self.cliente, self.atributo, self.pontuacao, self.id_partida, self.criar_partida_view, self.back_to_login)) 
+        self.window.show_view(EsperarEscolhas(self.cliente, self.atributo, self.pontuacao, self.id_partida, self.criar_partida_view, self.back_to_login, Turno)) 
 

@@ -7,7 +7,7 @@ import threading
 from ..telas.vencedor_turno import VencedorTurno
 
 class EsperarEscolhas(arcade.View):
-    def __init__(self, cliente, atributo_turno, pontuacao, id_partida, criar_partida_view, back_to_login):
+    def __init__(self, cliente, atributo_turno, pontuacao, id_partida, criar_partida_view, back_to_login, novo_turno):
         super().__init__()
 
         arcade.set_background_color(AZUL)
@@ -19,6 +19,7 @@ class EsperarEscolhas(arcade.View):
          
         self.criar_partida_view = criar_partida_view
         self.back_to_login = back_to_login
+        self.novo_turno = novo_turno
 
         self.centro = None
         self.esquerda = None
@@ -106,7 +107,7 @@ class EsperarEscolhas(arcade.View):
                 escolhas = eval(escolhas_cada_jogador)
                 pontuacao = eval(pontuacao)
                 
-                self.window.show_view(VencedorTurno(self.cliente, self.atributo, vencedor, escolhas, pontuacao, id_partida, novo_atributo, self.criar_partida_view, self.back_to_login)) 
+                self.window.show_view(VencedorTurno(self.cliente, self.atributo, vencedor, escolhas, pontuacao, id_partida, novo_atributo, self.criar_partida_view, self.back_to_login, self.novo_turno)) 
 
                 
                 
