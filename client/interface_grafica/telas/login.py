@@ -89,7 +89,7 @@ class Login(arcade.View):
         #auxiliar:
         vbox = arcade.gui.UIBoxLayout()
         self.msg = arcade.gui.UITextArea(
-            text="", width=450, height=40, font_size=10, font_name=POPPINS, text_color=arcade.color.RED
+            text="", height=40, font_size=12, font_name=POPPINS, text_color=arcade.color.RED
         )
         vbox.add(self.msg)
         
