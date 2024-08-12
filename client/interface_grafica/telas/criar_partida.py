@@ -126,6 +126,8 @@ class CriarPartida(arcade.View):
         self.gerencia_entrada.draw()
                 
     def on_mouse_press(self, x, y, button, modifiers):
+        self.msg.text = ""
+
         for botao in self.botoes:
             if 'texture' in botao:
                 if (botao['x'] - botao['width'] / 2 < x < botao['x'] + botao['width'] / 2 and
@@ -145,8 +147,10 @@ class CriarPartida(arcade.View):
             if self.cliente.mensagem_servidor.startswith("convite"):
                 _,username_dono,id_partida = self.cliente.mensagem_servidor.split(',')
                 self.window.show_view(ResponderConvite(self.cliente,username_dono,id_partida, CriarPartida, self.back_to_login))
-                
+            
+            #se não for, exibe a mensagem pro usuário
             self.msg.text = self.cliente.mensagem_servidor
+            self.cliente.mensagem_servidor = None
             self.mensagem = None
                     
     def on_show_view(self):

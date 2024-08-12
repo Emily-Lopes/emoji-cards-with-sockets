@@ -66,7 +66,7 @@ class ListenServer(ManipularSocket):
             #_, vencedor, carta_adicionada = request.split(',')
             self.mensagem_servidor = request
 
-        elif request.startswith('Erro ao gerenciar a partida'):
+        elif request.lower().startswith('erro'):
             self.mensagem_servidor = request
             
 
