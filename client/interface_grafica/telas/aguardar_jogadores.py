@@ -56,14 +56,16 @@ class AguardarJogadores(arcade.View):
                 self.cliente.mensagem_servidor = None
                 
                 baralhos = self.cliente.manipular_baralhos(baralhos)
-                if len(baralhos)>0:
-                    self.window.show_view(EscolherBaralho(self.cliente, baralhos,id_partida, self.criar_partida_view, self.back_to_login)) 
-                else:
-                    #escolher um baralho aleatorio
-                    self.cliente.baralho_escolhido = self.cliente.gerar_baralho_aleatorio()
-                    print("avisou_escolha")
-                    self.cliente.responder_baralho_escolhido(id_partida)
-                    self.window.show_view(AguardarPartida(self.cliente, self.criar_partida_view, self.back_to_login)) 
+                self.window.show_view(EscolherBaralho(self.cliente, baralhos,id_partida, self.criar_partida_view, self.back_to_login)) 
+
+                # if len(baralhos)>0:
+                #     self.window.show_view(EscolherBaralho(self.cliente, baralhos,id_partida, self.criar_partida_view, self.back_to_login)) 
+                # else:
+                #     #escolher um baralho aleatorio
+                #     self.cliente.baralho_escolhido = self.cliente.gerar_baralho_aleatorio()
+                #     print("avisou_escolha")
+                #     self.cliente.responder_baralho_escolhido(id_partida)
+                #     self.window.show_view(AguardarPartida(self.cliente, self.criar_partida_view, self.back_to_login)) 
             
             elif self.cliente.mensagem_servidor.lower().startswith("erro"):
                 self.window.show_view(self.criar_partida_view(self.cliente, self.back_to_login)) 

@@ -12,7 +12,14 @@ class EscolherBaralho(arcade.View):
         self.cliente = cliente
         self.mensagem = None
         
-        self.baralhos = baralhos
+        if len(baralhos)==0:
+            self.baralhos = [self.cliente.gerar_baralho_aleatorio()]
+            print(self.baralhos)
+            self.mensagem = "O baralho foi gerado aleatoriamente!"
+        
+        else:
+            self.baralhos = baralhos
+            
         self.id_partida = id_partida
         
         self.criar_partida_view = criar_partida_view
