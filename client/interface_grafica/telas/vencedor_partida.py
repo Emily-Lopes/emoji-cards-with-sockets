@@ -13,6 +13,8 @@ class VencedorPartida(arcade.View):
         self.vencedor = vencedor
         self.carta_adicionada = carta_adicionada
         self.pontuacao = pontuacao
+        
+        self.username_usuario = self.cliente.get_username()
          
         self.criar_partida_view = criar_partida_view
         self.back_to_login = back_to_login
@@ -23,13 +25,13 @@ class VencedorPartida(arcade.View):
 
         self.botoes = []
 
-        self.b_provisorio = arcade.load_texture("interface_grafica/resources/widgets/opcao.png")
+        self.b_sair = arcade.load_texture("interface_grafica/resources/widgets/botoes/b-excluir.png")
         self.botoes.append({
-            'texture': self.b_provisorio,
+            'texture': self.b_sair,
             'x': LARGURA_TELA - 100,
             'y': 100,
-            'width': 80,
-            'height': 80,
+            'width': 40,
+            'height': 40,
             'action': self.mudar_tela
         })
 
@@ -44,22 +46,35 @@ class VencedorPartida(arcade.View):
         arcade.start_render()
         
         if self.vencedor != "empate":
-            arcade.draw_text("Parabéns!", LARGURA_TELA//2, ALTURA_TELA//2 + 200, AMARELO, 
-                            font_size=30, font_name=AGRANDIR, anchor_x="center")
+            if self.vencedor == self.username_usuario:
+                arcade.draw_text(f"Parabéns!", LARGURA_TELA//2, ALTURA_TELA//2 + 200, AMARELO, 
+                                font_size=30, font_name=AGRANDIR, anchor_x="center")
+                
+                arcade.draw_text("você venceu a partida e ganhou uma nova carta:", LARGURA_TELA//2, ALTURA_TELA//2 + 90, arcade.color.WHITE, 
+                                font_size=15, font_name=POPPINS, anchor_x="center")
             
-            arcade.draw_text("por vencer a partida você ganhou:", LARGURA_TELA//2, ALTURA_TELA//2 + 90, arcade.color.WHITE, 
-                            font_size=15, font_name=POPPINS, anchor_x="center")
+            else:
+                arcade.draw_text("self.username_usuari", LARGURA_TELA//2, ALTURA_TELA//2 + 220, arcade.color.WHITE, 
+                                font_size=15, font_name=POPPINS, anchor_x="center")
+                
+                arcade.draw_text(f"a partida foi vencida por:", LARGURA_TELA//2, ALTURA_TELA//2 + 200, AMARELO, 
+                                font_size=20, font_name=AGRANDIR, anchor_x="center")
+                
+                arcade.draw_text("e por isso el@ ganhou uma nova carta:", LARGURA_TELA//2, ALTURA_TELA//2 + 90, arcade.color.WHITE, 
+                                font_size=15, font_name=POPPINS, anchor_x="center")
+                
         else:
             arcade.draw_text("Empatou ;)", LARGURA_TELA//2, ALTURA_TELA//2 + 200, AMARELO, 
                             font_size=30, font_name=AGRANDIR, anchor_x="center")
-        
-
-        arcade.draw_texture_rectangle(LARGURA_TELA//2, ALTURA_TELA // 2 - 50, 250, 280, self.centro)
+    
 
         if self.fundo_vencedor and self.vencedor:
-            arcade.draw_texture_rectangle(LARGURA_TELA//2, ALTURA_TELA// 2 + 150, 350, 60, self.fundo_vencedor)
-            arcade.draw_text(self.vencedor, LARGURA_TELA//2, ALTURA_TELA// 2 + 143, arcade.color.WHITE, 
-                         font_size=15, font_name=POPPINS, anchor_x="center")
+            if self.vencedor != 'empate':
+                arcade.draw_texture_rectangle(LARGURA_TELA//2, ALTURA_TELA // 2 - 50, 250, 280, self.centro)
+
+                arcade.draw_texture_rectangle(LARGURA_TELA//2, ALTURA_TELA// 2 + 150, 350, 60, self.fundo_vencedor)
+                arcade.draw_text(self.vencedor, LARGURA_TELA//2, ALTURA_TELA// 2 + 143, arcade.color.WHITE, 
+                            font_size=15, font_name=POPPINS, anchor_x="center")
         
         for botao in self.botoes:
             if 'texture' in botao:
