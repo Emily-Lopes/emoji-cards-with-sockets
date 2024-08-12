@@ -20,6 +20,8 @@ class VencedorTurno(arcade.View):
         self.id_partida = id_partida
         self.atributo_novo_turno = atributo_novo_turno
          
+        self.username_usuario = self.cliente.get_username()
+
         self.criar_partida_view = criar_partida_view
         self.back_to_login = back_to_login
         self.novo_turno = novo_turno
@@ -28,31 +30,32 @@ class VencedorTurno(arcade.View):
         self.esquerda = None
         self.direita = None
         
-        self.resultado = None
+        self.resultado = None   
         
-        print(self.pontuacao.keys(), self.escolhas.keys())
+        self.outros_jogadores = [username for username in self.pontuacao.keys() if username != self.username_usuario ] 
         
-        self.usernames = [username for username in self.pontuacao.keys()] #usernamedono, username2, username3
-        print(self.usernames)
+        self.username_1 = self.username_usuario # usuario fica no meio
+        self.username_2 = self.outros_jogadores[0]
+        self.username_3 = self.outros_jogadores[1] 
+        
+        self.usernames = [self.username_1,self.username_2,self.username_3]    
         
         if self.vencedor == "empate":
-            
+    
             self.resultado = "Empatou ;)"
-        
-        else:            
-            self.resultado = f"{self.vencedor} venceu com a carta {self.escolhas[self.vencedor]}!"
-            # self.username_2 = self.vencedor
             
-            # # Remove o vencedor da lista para posicionar os outros dois
-            # outros_jogadores = [username for username in self.usernames if username != self.vencedor]
+            self.cores = [arcade.color.WHITE,arcade.color.WHITE,arcade.color.WHITE]
+            
 
-            # self.username_1 = outros_jogadores[0]
-            # self.username_3 = outros_jogadores[1]
-        
-        
-        self.username_1 = self.usernames[1]
-        self.username_2 = self.usernames[0] # dono ficar no meio
-        self.username_3 = self.usernames[2]
+        else:            
+            self.resultado = f"<{self.vencedor}> venceu com a emocao '{self.escolhas[self.vencedor]}'!"
+            
+            self.cores = []
+            for username in self.usernames:
+                if username == self.vencedor:
+                    self.cores.append(AMARELO)
+                else:
+                    self.cores.append(arcade.color.WHITE)
             
         self.pontuacao_1 = str(self.pontuacao[self.username_1])
         self.pontuacao_2 = str(self.pontuacao[self.username_2])
@@ -61,19 +64,18 @@ class VencedorTurno(arcade.View):
         self.escolha_1 = str(self.escolhas[self.username_1])
         self.escolha_2 = str(self.escolhas[self.username_2])
         self.escolha_3 = str(self.escolhas[self.username_3])       
-              
 
         self.fundo_atributo = arcade.load_texture("interface_grafica/resources/widgets/campo.png")
 
         self.botoes = []
 
-        self.b_provisorio = arcade.load_texture("interface_grafica/resources/widgets/opcao.png")
+        self.b_proximo = arcade.load_texture("interface_grafica/resources/widgets/botoes/b-proximo.png")
         self.botoes.append({
-            'texture': self.b_provisorio,
+            'texture': self.b_proximo,
             'x': LARGURA_TELA - 100,
-            'y': 100,
-            'width': 80,
-            'height': 80,
+            'y': 50,
+            'width': 120,
+            'height': 30,
             'action': self.mudar_tela
         })
 
@@ -88,16 +90,16 @@ class VencedorTurno(arcade.View):
     def on_draw(self):
         arcade.start_render()
 
-        arcade.draw_texture_rectangle(LARGURA_TELA//2, ALTURA_TELA // 2 - 50, 250, 280, self.centro)
-        arcade.draw_text(self.username_1, LARGURA_TELA//2, 100, arcade.color.WHITE, 
+        arcade.draw_texture_rectangle(LARGURA_TELA//2, ALTURA_TELA // 2 - 50, 180, 250, self.centro)
+        arcade.draw_text(self.username_1, LARGURA_TELA//2, 100, self.cores[0], 
                          font_size=15, font_name=POPPINS, anchor_x="center")
         
-        arcade.draw_texture_rectangle(LARGURA_TELA//2 - 200, ALTURA_TELA // 2 - 50, 210, 230, self.esquerda)
-        arcade.draw_text(self.username_2, LARGURA_TELA//2 - 200, 120, arcade.color.WHITE, 
+        arcade.draw_texture_rectangle(LARGURA_TELA//2 - 200, ALTURA_TELA // 2 - 50, 180, 250, self.esquerda)
+        arcade.draw_text(self.username_2, LARGURA_TELA//2 - 200, 100,  self.cores[1], 
                          font_size=15, font_name=POPPINS, anchor_x="center")
         
-        arcade.draw_texture_rectangle(LARGURA_TELA//2 + 200, ALTURA_TELA // 2 - 50, 210, 230, self.direita)
-        arcade.draw_text(self.username_3, LARGURA_TELA//2 + 200, 120, arcade.color.WHITE, 
+        arcade.draw_texture_rectangle(LARGURA_TELA//2 + 200, ALTURA_TELA // 2 - 50, 180, 250, self.direita)
+        arcade.draw_text(self.username_3, LARGURA_TELA//2 + 200, 100,  self.cores[2], 
                          font_size=15, font_name=POPPINS, anchor_x="center")
 
         # if self.username_1 and self.pontuacao_1:
@@ -107,15 +109,15 @@ class VencedorTurno(arcade.View):
                         font_size=15, font_name=POPPINS, anchor_x="center")
             
         # if self.username_2 and self.pontuacao_2:
-        arcade.draw_text(self.username_2, LARGURA_TELA//2 - 180, 570, arcade.color.WHITE, 
+        arcade.draw_text(self.username_2, LARGURA_TELA//2 - 180, 570, AMARELO, 
                         font_size=15, font_name=POPPINS, anchor_x="center")
-        arcade.draw_text(self.pontuacao_2, LARGURA_TELA//2 - 180, 530, arcade.color.WHITE, 
+        arcade.draw_text(self.pontuacao_2, LARGURA_TELA//2 - 180, 530, AMARELO, 
                         font_size=15, font_name=POPPINS, anchor_x="center")
             
         # if self.username_3 and self.pontuacao_3:
-        arcade.draw_text(self.username_3, LARGURA_TELA//2 + 180, 570, arcade.color.WHITE, 
+        arcade.draw_text(self.username_3, LARGURA_TELA//2 + 180, 570, AMARELO, 
                         font_size=15, font_name=POPPINS, anchor_x="center")
-        arcade.draw_text(self.pontuacao_3, LARGURA_TELA//2 + 180, 530, arcade.color.WHITE, 
+        arcade.draw_text(self.pontuacao_3, LARGURA_TELA//2 + 180, 530, AMARELO, 
                         font_size=15, font_name=POPPINS, anchor_x="center")
             
         if self.fundo_atributo and self.atributo:
@@ -123,7 +125,7 @@ class VencedorTurno(arcade.View):
             arcade.draw_text(self.atributo, LARGURA_TELA//2, ALTURA_TELA// 2 + 143, arcade.color.WHITE, 
                          font_size=15, font_name=POPPINS, anchor_x="center")
         
-        arcade.draw_text(self.resultado, LARGURA_TELA//2,  ALTURA_TELA// 2 + 100, arcade.color.WHITE, 
+        arcade.draw_text(self.resultado, LARGURA_TELA//2,  50, AMARELO, 
                 font_size=15, font_name=POPPINS, anchor_x="center")
         
         for botao in self.botoes:

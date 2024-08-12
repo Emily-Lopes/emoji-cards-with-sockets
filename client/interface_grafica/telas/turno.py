@@ -34,8 +34,7 @@ class Turno(arcade.View):
         self.direita_p_esquerda = None
         self.direita_p_direita = None
         
-        self.outros_jogadores = [username for username in self.pontuacao.keys() if username != self.username_usuario ] #usernamedono, username2, username3
-        print(self.outros_jogadores)
+        self.outros_jogadores = [username for username in self.pontuacao.keys() if username != self.username_usuario ] 
         
         #mostrar pontuacao
         self.username_1 = self.username_usuario # usuario fica no meio
@@ -171,5 +170,5 @@ class Turno(arcade.View):
         self.cliente.responder_jogada_turno(emocao, self.id_partida)
         
         #mudar para tela de aguardar
-        self.window.show_view(EsperarEscolhas(self.cliente, self.atributo, self.pontuacao, self.id_partida, self.criar_partida_view, self.back_to_login, Turno)) 
+        self.window.show_view(EsperarEscolhas(self.cliente, emocao, self.atributo, self.pontuacao, self.id_partida, self.criar_partida_view, self.back_to_login, Turno)) 
 
