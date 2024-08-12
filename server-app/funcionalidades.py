@@ -543,7 +543,7 @@ def selecionar_atributo():
 def comparar_categorico(valor1, valor2, prioridade):
         if valor1 == valor2:
             return 0
-        return 1 if prioridade.index(valor1) < prioridade.index(valor2) else -1
+        return 1 if prioridade.index(valor1) > prioridade.index(valor2) else -1
 
 def comparar_atributos(atributos_cartas, atributo_turno):
     vencedor = None
@@ -560,7 +560,8 @@ def comparar_atributos(atributos_cartas, atributo_turno):
                 vencedor = 'empate'
 
         elif atributo_turno == 'tempo':
-            if maior_valor is None or valor > maior_valor:
+            prioridade = ["segundos", "minutos", "horas", "dias", "semanas", "meses", "anos"]
+            if maior_valor is None or comparar_categorico(valor, maior_valor, prioridade) > 0:
                 maior_valor = valor
                 vencedor = username
             elif valor == maior_valor:
