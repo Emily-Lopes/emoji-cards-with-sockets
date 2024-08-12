@@ -5,8 +5,7 @@
 
 ## Pré-requisitos
 
-- **Docker**: Necessário para a execução dos containers do servidor e banco de dados.
-- **Pyhton3**: Necessário para a execução dos scripts dos clientes (simulação da interface no momento).
+- **Docker**
 
 ## Como Executar
 Siga as etapas abaixo para executar o jogo:
@@ -38,13 +37,13 @@ Siga as etapas abaixo para executar o jogo:
 
 #### Observações: Para facilitar a execução, o arquivo docker-compose.yml tem um conteiner para o servidor de banco de dados, um conteiner para o servidor de aplicação e três conteiners para três clientes, já que para jogar uma partida é preciso ter no mínimo três jogadores. Além disso, no banco de dados já existem três usuários cadatrados:
 ```
-                |--------------|--------------|
-                |   username   |    senha     |
-                |--------------|--------------|
-                |    thais     |   12345678   |
-                |   henrique   |   12345678   |
-                |    aluno     |   12345678   |
-                |--------------|--------------|
+    |--------------|--------------|
+    |   username   |    senha     |
+    |--------------|--------------|
+    |    thais     |   12345678   |
+    |   henrique   |   12345678   |
+    |    aluno     |   12345678   |
+    |--------------|--------------|
 ```
 ## Cartas do Jogo
 Atualmente o jogo possui 24 desponíveis, elas são:
