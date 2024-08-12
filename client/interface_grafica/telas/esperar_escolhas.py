@@ -1,7 +1,7 @@
 import arcade
 import arcade.gui # submódulo gui do arcade, que fornece componentes para criar interfaces gráficas.
 
-from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR, AGRANDIR_BOLD
+from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR
 
 import threading
 from ..telas.vencedor_turno import VencedorTurno
@@ -42,7 +42,8 @@ class EsperarEscolhas(arcade.View):
         self.fundo_atributo = arcade.load_texture("interface_grafica/resources/widgets/campo.png")
 
     def setup(self):
-        self.centro = arcade.load_texture(f"interface_grafica/resources/cartas/{self.emocao_escolhida}.png")
+        #self.centro = arcade.load_texture(f"interface_grafica/resources/cartas/{self.emocao_escolhida}.png")
+        self.centro = arcade.load_texture("interface_grafica/resources/cartas/carta-tras.png")
         self.esquerda = arcade.load_texture("interface_grafica/resources/cartas/carta-tras.png")
         self.direita = arcade.load_texture("interface_grafica/resources/cartas/carta-tras.png")
         

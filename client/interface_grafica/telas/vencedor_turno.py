@@ -1,7 +1,7 @@
 import arcade
 import arcade.gui # submódulo gui do arcade, que fornece componentes para criar interfaces gráficas.
 
-from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR, AGRANDIR_BOLD
+from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR
 
 import threading
 # from ..telas.turno import Turno
@@ -11,7 +11,7 @@ class VencedorTurno(arcade.View):
         super().__init__()
 
         arcade.set_background_color(AZUL)
-        
+    
         self.cliente = cliente
         self.atributo = atributo
         self.vencedor = vencedor
@@ -48,7 +48,7 @@ class VencedorTurno(arcade.View):
             
 
         else:            
-            self.resultado = f"<{self.vencedor}> venceu com a emocao '{self.escolhas[self.vencedor]}'!"
+            self.resultado = f"{self.vencedor} venceu com a emocao {self.escolhas[self.vencedor]}!"
             
             self.cores = []
             for username in self.usernames:

@@ -1,7 +1,7 @@
 import arcade
 import arcade.gui # submódulo gui do arcade, que fornece componentes para criar interfaces gráficas.
 
-from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR, AGRANDIR_BOLD
+from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR
 
 class VencedorPartida(arcade.View):
     def __init__(self, cliente, vencedor,carta_adicionada, pontuacao, criar_partida_view, back_to_login):
@@ -57,7 +57,7 @@ class VencedorPartida(arcade.View):
                                 font_size=15, font_name=POPPINS, anchor_x="center")
             
             else:
-                arcade.draw_text("self.username_usuari", LARGURA_TELA//2, ALTURA_TELA//2 + 220, arcade.color.WHITE, 
+                arcade.draw_text(self.username_usuario, LARGURA_TELA//2, ALTURA_TELA//2 + 220, arcade.color.WHITE, 
                                 font_size=15, font_name=POPPINS, anchor_x="center")
                 
                 arcade.draw_text(f"a partida foi vencida por:", LARGURA_TELA//2, ALTURA_TELA//2 + 200, AMARELO, 
@@ -67,7 +67,7 @@ class VencedorPartida(arcade.View):
                                 font_size=15, font_name=POPPINS, anchor_x="center")
                 
         else:
-            arcade.draw_text("Empatou ;)", LARGURA_TELA//2, ALTURA_TELA//2 + 200, AMARELO, 
+            arcade.draw_text("Empatou!", LARGURA_TELA//2, ALTURA_TELA//2 + 200, AMARELO, 
                             font_size=30, font_name=AGRANDIR, anchor_x="center")
     
 

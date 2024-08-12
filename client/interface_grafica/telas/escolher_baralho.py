@@ -1,7 +1,7 @@
 import arcade
 import arcade.gui # submódulo gui do arcade, que fornece componentes para criar interfaces gráficas.
 
-from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR, AGRANDIR_BOLD
+from ..resources.constantes import LARGURA_TELA, ALTURA_TELA, AZUL, AMARELO, POPPINS, AGRANDIR
 
 from ..telas.aguardar_partida import AguardarPartida
 
