@@ -15,6 +15,9 @@ class VencedorPartida(arcade.View):
         self.pontuacao = pontuacao
         
         self.username_usuario = self.cliente.get_username()
+        
+        #reiniciar contador turnos
+        self.cliente.count_turnos = 0
          
         self.criar_partida_view = criar_partida_view
         self.back_to_login = back_to_login

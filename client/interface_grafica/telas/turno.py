@@ -17,6 +17,9 @@ class Turno(arcade.View):
         
         self.username_usuario = self.cliente.get_username()
         
+        #atualizar contador turnos
+        self.cliente.count_turnos += 1
+        
         self.criar_partida_view = criar_partida_view
         self.back_to_login = back_to_login
 
@@ -53,7 +56,7 @@ class Turno(arcade.View):
         self.botoes = []
 
         # preenchendo cartas principais da rodada provisoriamente
-        print('baralho escolhido=',self.cliente.baralho_escolhido)
+        print('baralho escolhido = ',self.cliente.baralho_escolhido)
         emocao_1 = self.cliente.baralho_escolhido[0]
         self.carta_1 = arcade.load_texture(f"interface_grafica/resources/cartas/{emocao_1}.png")
         self.botoes.append({
@@ -108,6 +111,10 @@ class Turno(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
+        
+        arcade.draw_text(f"Turno {self.cliente.count_turnos}", 10, 580,
+            AMARELO, font_size=12, font_name=POPPINS,  anchor_x="left")
+
 
         arcade.draw_texture_rectangle(63, ALTURA_TELA // 2, 90, 126, self.esquerda_centro, angle=270)
         arcade.draw_texture_rectangle(63, ALTURA_TELA // 2 + 95, 90, 126, self.esquerda_esquerda, angle=270)

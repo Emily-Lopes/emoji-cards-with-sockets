@@ -10,6 +10,7 @@ class Client(ListenServer):
         super().__init__(server_ip, server_porta)
         self.colecao = None
         self.baralho_escolhido = None
+        self.count_turnos = 0
 
     def get_username(self):
         return self.username
