@@ -57,7 +57,7 @@ class VencedorPartida(arcade.View):
                                 font_size=15, font_name=POPPINS, anchor_x="center")
             
             else:
-                arcade.draw_text(self.username_usuario, LARGURA_TELA//2, ALTURA_TELA//2 + 220, arcade.color.WHITE, 
+                arcade.draw_text(self.username_usuario, LARGURA_TELA//2, ALTURA_TELA//2 + 250, arcade.color.WHITE, 
                                 font_size=15, font_name=POPPINS, anchor_x="center")
                 
                 arcade.draw_text(f"a partida foi vencida por:", LARGURA_TELA//2, ALTURA_TELA//2 + 200, AMARELO, 
@@ -73,7 +73,7 @@ class VencedorPartida(arcade.View):
 
         if self.fundo_vencedor and self.vencedor:
             if self.vencedor != 'empate':
-                arcade.draw_texture_rectangle(LARGURA_TELA//2, ALTURA_TELA // 2 - 50, 250, 280, self.centro)
+                arcade.draw_texture_rectangle(LARGURA_TELA//2, ALTURA_TELA // 2 - 50, 180, 250, self.centro)
 
                 arcade.draw_texture_rectangle(LARGURA_TELA//2, ALTURA_TELA// 2 + 150, 350, 60, self.fundo_vencedor)
                 arcade.draw_text(self.vencedor, LARGURA_TELA//2, ALTURA_TELA// 2 + 143, arcade.color.WHITE, 
