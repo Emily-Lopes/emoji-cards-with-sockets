@@ -15,7 +15,6 @@ class AguardarJogadores(arcade.View):
         self.gerencia_entrada = arcade.gui.UIManager() # cria uma instância do gerenciador de interface do usuário, que será usado para gerenciar os elementos gráficos
         
         self.cliente = cliente
-        self.mensagem = None
         
         self.criar_partida_view = criar_partida_view
         self.back_to_login = back_to_login
@@ -33,7 +32,7 @@ class AguardarJogadores(arcade.View):
         
         # campo de texto para mostrar mensagem
         self.username = arcade.gui.UITextArea(
-            text="   Aguardando Jogadores ...", width=LARGURA_TELA, height=40, font_size=30, font_name=AGRANDIR, text_color=AMARELO
+            text="      Aguardando Jogadores ...", width=LARGURA_TELA, height=40, font_size=30, font_name=AGRANDIR, text_color=AMARELO
         )
         # adiciona o campo de texto ao layout vertical
         vbox.add(self.username)
@@ -41,7 +40,7 @@ class AguardarJogadores(arcade.View):
         # Adiciona o layout à interface do usuário
         self.gerencia_entrada.add(
             arcade.gui.UIAnchorWidget(
-                anchor_x="center", anchor_y="center", child=vbox
+                anchor_x="left", anchor_y="center_y", child=vbox
             )
         )
     

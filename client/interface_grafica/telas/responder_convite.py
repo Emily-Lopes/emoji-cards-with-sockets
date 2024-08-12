@@ -34,7 +34,7 @@ class ResponderConvite(arcade.View):
         
         # campo de texto para mostrar mensagem
         self.titulo = arcade.gui.UITextArea(
-            text="Bora Jogar?", width=150, height=40, font_size=14, font_name=AGRANDIR, text_color=AMARELO
+            text="Bora Jogar?", width=400, height=40, font_size=25, font_name=AGRANDIR, text_color=AMARELO
         )
         # adiciona o campo de texto ao layout vertical
         vbox.add(self.titulo)
@@ -54,7 +54,7 @@ class ResponderConvite(arcade.View):
         
         aceitar_button = arcade.gui.UIFlatButton(
             text="ACEITAR", width=100, style={
-                                            "font_name": AGRANDIR,
+                                            "font_name": POPPINS,
                                             "font_size": 14,
                                             "font_color": AZUL,
                                             "border_width": 3,
@@ -72,7 +72,7 @@ class ResponderConvite(arcade.View):
         
         recusar_button = arcade.gui.UIFlatButton(
             text="RECUSAR", width=100, style={
-                                            "font_name": AGRANDIR,
+                                            "font_name": POPPINS,
                                             "font_size": 14,
                                             "font_color": AZUL,
                                             "border_width": 3,

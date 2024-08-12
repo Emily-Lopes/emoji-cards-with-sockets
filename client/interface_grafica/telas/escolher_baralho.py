@@ -10,6 +10,8 @@ class EscolherBaralho(arcade.View):
         super().__init__()
         
         self.cliente = cliente
+        self.mensagem = None
+        
         self.baralhos = baralhos
         self.id_partida = id_partida
         
@@ -27,7 +29,7 @@ class EscolherBaralho(arcade.View):
             'texture': self.b_escolher,
             'x': LARGURA_TELA // 2,
             'y': 46,
-            'width': 190,
+            'width': 200,
             'height': 70,
             'action': self.confirmar_escolha
         })
@@ -60,19 +62,45 @@ class EscolherBaralho(arcade.View):
 
         if self.baralho_3:
             self.fundo_baralho_3 = arcade.load_texture("interface_grafica/resources/widgets/baralho.png")
+        
+        self.gerencia_entrada = arcade.gui.UIManager()
+        self.setup() # chama o método setup para configurar a interface gráfica da visão.
+
 
     def setup(self):
-        pass
+        
+        self.icone_perfil = arcade.load_texture("interface_grafica/resources/widgets/perfil.png")
 
-    def ow_show(self):
+
+        #auxiliar:
+        vbox = arcade.gui.UIBoxLayout()
+        self.msg = arcade.gui.UITextArea(
+            text="", height=40, font_size=12, font_name=POPPINS, text_color=arcade.color.RED
+        )
+        vbox.add(self.msg)
+        
+        self.gerencia_entrada.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="center", anchor_y="top", child=vbox
+            )
+        )
+
+    def ow_show_view(self):
         self.setup()
 
     def on_draw(self):
         arcade.start_render()  
+        
+        arcade.draw_texture_rectangle(970, 570, 35, 35, self.icone_perfil)
+
+        
+        arcade.draw_text(self.cliente.get_username(), 100, 580,
+                    AMARELO, font_size=12, font_name=POPPINS,  anchor_x="left")
+
 
         espacamento = 85
-        largura_carta = 100
-        altura_carta = 118
+        largura_carta = 70
+        altura_carta = 100
         qtd_cartas = 9
 
         if self.baralho_1:
@@ -118,8 +146,12 @@ class EscolherBaralho(arcade.View):
         for botao in self.botoes:
             if 'texture' in botao:
                 arcade.draw_texture_rectangle(botao['x'], botao['y'], botao['width'], botao['height'], botao['texture'])
+        
+        self.gerencia_entrada.draw()
+
             
     def on_mouse_press(self, x, y, button, modifiers):
+        self.msg.text = ""
         for botao in self.botoes:
             if 'texture' in botao:
                 if (botao['x'] - botao['width'] / 2 < x < botao['x'] + botao['width'] / 2 and
@@ -135,6 +167,12 @@ class EscolherBaralho(arcade.View):
             self.baralho_selecionado = 3
 
         self.on_draw()
+    
+    def on_update(self, delta_time: float):
+        if self.mensagem:
+            self.msg.text = self.mensagem
+            self.mensagem = None
+        
 
     def confirmar_escolha(self):
         if self.baralho_selecionado:
@@ -142,9 +180,9 @@ class EscolherBaralho(arcade.View):
             print(self.baralhos[self.baralho_selecionado-1])
             self.cliente.baralho_escolhido = self.baralhos[self.baralho_selecionado-1]
             print(self.cliente.baralho_escolhido)
-            print("avisou_escolha")
+            print(self.cliente.get_username(),"avisou que já escolheu baralho")
             self.cliente.responder_baralho_escolhido(self.id_partida)
             self.window.show_view(AguardarPartida(self.cliente, self.criar_partida_view, self.back_to_login)) 
         else:
-            print("Você precisa escolher um baralho")
+            self.mensagem = "Você precisa escolher um baralho"
 
