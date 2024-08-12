@@ -9,11 +9,13 @@ from ..telas.esperar_escolhas import EsperarEscolhas
 class Turno(arcade.View):
     def __init__(self, cliente, atributo_turno, pontuacao, id_partida, criar_partida_view, back_to_login):
         super().__init__()
-        
+                
         self.cliente = cliente
-        self.atributo = atributo_turno.replace('_',' ').replace('qtd','quantidade de').upper()
+        self.atributo = atributo_turno.replace('_',' ').replace('qtd','').upper()
         self.pontuacao = pontuacao
         self.id_partida = id_partida
+        
+        self.username_usuario = self.cliente.get_username()
         
         self.criar_partida_view = criar_partida_view
         self.back_to_login = back_to_login
@@ -32,13 +34,13 @@ class Turno(arcade.View):
         self.direita_p_esquerda = None
         self.direita_p_direita = None
         
-        self.usernames = [username for username in self.pontuacao.keys()] #usernamedono, username2, username3
-        print(self.usernames)
+        self.outros_jogadores = [username for username in self.pontuacao.keys() if username != self.username_usuario ] #usernamedono, username2, username3
+        print(self.outros_jogadores)
         
         #mostrar pontuacao
-        self.username_1 = self.usernames[1]
-        self.username_2 = self.usernames[0] # dono ficar no meio
-        self.username_3 = self.usernames[2]
+        self.username_1 = self.username_usuario # usuario fica no meio
+        self.username_2 = self.outros_jogadores[0]
+        self.username_3 = self.outros_jogadores[1]
 
         self.pontuacao_1 = str(self.pontuacao[self.username_1])
         self.pontuacao_2 = str(self.pontuacao[self.username_2])
@@ -59,8 +61,8 @@ class Turno(arcade.View):
             'texture': self.carta_1,
             'x': LARGURA_TELA // 2 - 183,
             'y': 125,
-            'width': 270,
-            'height': 270,
+            'width': 160,
+            'height': 230,
             'action': lambda:  self.selecionar_carta(0)
         })
 
@@ -70,8 +72,8 @@ class Turno(arcade.View):
             'texture': self.carta_2,
             'x': LARGURA_TELA // 2,
             'y': 125,
-            'width': 270,
-            'height': 270,
+            'width': 160,
+            'height': 230,
             'action': lambda:  self.selecionar_carta(1)
         })
         
@@ -81,8 +83,8 @@ class Turno(arcade.View):
             'texture': self.carta_3,
             'x': LARGURA_TELA // 2 + 183,
             'y': 125,
-            'width': 270,
-            'height': 270,
+            'width': 160,
+            'height': 230,
             'action': lambda:  self.selecionar_carta(2)
         })
 
@@ -130,15 +132,15 @@ class Turno(arcade.View):
                         font_size=15, font_name=POPPINS, anchor_x="center")
             
         # if self.username_2 and self.pontuacao_2:
-        arcade.draw_text(self.username_2, LARGURA_TELA//2 - 180, 570, arcade.color.WHITE, 
+        arcade.draw_text(self.username_2, LARGURA_TELA//2 - 180, 570, AMARELO, 
                         font_size=15, font_name=POPPINS, anchor_x="center")
-        arcade.draw_text(self.pontuacao_2, LARGURA_TELA//2 - 180, 530, arcade.color.WHITE, 
+        arcade.draw_text(self.pontuacao_2, LARGURA_TELA//2 - 180, 530, AMARELO, 
                         font_size=15, font_name=POPPINS, anchor_x="center")
             
         # if self.username_3 and self.pontuacao_3:
-        arcade.draw_text(self.username_3, LARGURA_TELA//2 + 180, 570, arcade.color.WHITE, 
+        arcade.draw_text(self.username_3, LARGURA_TELA//2 + 180, 570, AMARELO, 
                         font_size=15, font_name=POPPINS, anchor_x="center")
-        arcade.draw_text(self.pontuacao_3, LARGURA_TELA//2 + 180, 530, arcade.color.WHITE, 
+        arcade.draw_text(self.pontuacao_3, LARGURA_TELA//2 + 180, 530, AMARELO, 
                         font_size=15, font_name=POPPINS, anchor_x="center")
             
         if self.fundo_atributo and self.atributo:

@@ -145,7 +145,7 @@ def handle_client(client_socket):
         response = f"erro: mensagem não foi combinada"
         client_socket.send(response.encode('utf-8')) # convert string to bytes
     
-    print(f"resposta db: {response}")
+    print(f"\nresposta db: {response}")
     
     #finaliza thread
     client_socket.close()

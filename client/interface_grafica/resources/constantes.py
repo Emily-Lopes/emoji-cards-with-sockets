@@ -7,11 +7,9 @@ TITULO = "EmojiCards"
 AZUL = arcade.color_from_hex_string("#2C346B")
 AMARELO = arcade.color_from_hex_string("#F6BA2C")
 
-#POPPINS = os.path.join(os.path.dirname(__file__), 'fontes', 'Poppins.ttf')
 arcade.load_font(os.path.join(os.path.dirname(__file__), 'fontes', 'Poppins.ttf'))
 POPPINS = "Poppins"
 
-# AGRANDIR = os.path.join(os.path.dirname(__file__), 'fontes', 'Agrandir.otf')
 arcade.load_font( os.path.join(os.path.dirname(__file__), 'fontes', 'Agrandir.otf'))
 AGRANDIR = "Agrandir"
 
