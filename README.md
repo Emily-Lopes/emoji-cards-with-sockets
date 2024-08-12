@@ -35,7 +35,7 @@ Siga as etapas abaixo para executar o jogo:
     docker compose down
     ```
 
-#### Observações: Para facilitar a execução, o arquivo docker-compose.yml tem um conteiner para o servidor de banco de dados, um conteiner para o servidor de aplicação e três conteiners para três clientes, já que para jogar uma partida é preciso ter no mínimo três jogadores. Além disso, no banco de dados já existem três usuários cadatrados:
+#### Observações: Para facilitar a execução, o arquivo docker-compose.yml tem um conteiner para o servidor de banco de dados, um conteiner para o servidor de aplicação e três conteiners para três clientes, já que para jogar uma partida é preciso ter no mínimo três jogadores. Além disso, no banco de dados já existem três usuários cadastrados:
 ```
     |--------------|--------------|
     |   username   |    senha     |
@@ -46,10 +46,10 @@ Siga as etapas abaixo para executar o jogo:
     |--------------|--------------|
 ```
 ## Cartas do Jogo
-Atualmente o jogo possui 24 desponíveis, elas são:
+Atualmente o jogo possui 24 cartas desponíveis, elas são:
 <img src="client/interface_grafica/resources/widgets/cartas_disponiveis.png">
 
-Quando um usuário cria uma conta, sua coleção é criada pelo sistema sendo que 9 cartas são escolhidas aleatórias.
+Quando um usuário cria uma conta o sistema cria sua coleção com 9 cartas escolhidas aleatoriamente. Para aumentar a coleção o jogador deve vencer partidas, e a cada partida ganha uma nova carta é adicionada à sua coleção.
 
 ### Descrição dos Atributos de cada Carta
 
